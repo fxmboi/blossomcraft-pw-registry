@@ -682,3 +682,19 @@ body {
     transition: color 0.15s ease;
 }
 .remove-row-btn:hover { color: #ff2d75; }
+
+.card-server-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 3px 8px;
+    border: 1px solid currentColor;
+    margin-top: 15px;
+}
+
+.server-tulip { color: #ffb86c !important; }
+.server-lotus { color: #52fa7c !important; }
+.server-spirit { color: #8be9fd !important; }
+.server-cherry { color: #ff79c6 !important; }
