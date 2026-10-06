@@ -59,6 +59,13 @@
                                    oninput="this.value = this.value.replace(/\s+/g, '')">
                         </div>
                         <div class="input-field-group">
+                            <label for="newWarpOwner">Minecraft Username</label>
+                            <input type="text" id="newWarpOwner" placeholder="e.g., Notch" required autocomplete="off"
+                                   oninput="this.value = this.value.replace(/\s+/g, '')">
+                        </div>
+                    </div>
+                    <div class="form-row-split">
+                        <div class="input-field-group">
                             <label>Categories (Select all that apply)</label>
                             <div class="category-checkbox-grid">
                                 <label class="checkbox-tag"><input type="checkbox" name="warpCategory" value="Shop"> Shop</label>
@@ -76,7 +83,6 @@
                         <textarea id="newWarpDesc" rows="3" placeholder="What are your rules? What items do you specialize in?" required autocomplete="off" maxlength="150"></textarea>
                     </div>
                     <div class="market-grid-container">
-                        <!-- Left Side: Buy Input Entries -->
                         <div class="market-column">
                             <div class="market-header buy-header">Items You Want To Buy</div>
                             <div class="market-list" id="formBuyList">
