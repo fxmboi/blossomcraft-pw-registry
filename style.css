@@ -1,0 +1,670 @@
+/* ==========================================
+   1. MASTER ACCESSIBILITY OUTLINE DESTROYER
+   ========================================== */
+* , *::before, *::after {
+    outline: none !important;
+    outline-color: transparent !important;
+    outline-style: none !important;
+    outline-width: 0px !important;
+    box-shadow: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-color: #2b051a;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+#bubbleCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -2;
+}
+
+.glass-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    background: linear-gradient(135deg, rgba(188, 45, 255, 0.08) 0%, rgba(255, 45, 117, 0.05) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 0 120px rgba(255, 255, 255, 0.03);
+    pointer-events: none;
+}
+
+.content {
+    position: relative;
+    z-index: 1;
+    width: 100vw;
+    flex-grow: 1;
+}
+
+/* ==========================================
+   2. MOVEMENT ENGINE TRACK
+   ========================================== */
+.master-view-wrapper {
+    width: 100%;
+    max-width: 1200px; /* Expanded window width to accommodate 4 columns cleanly */
+    padding: 0 20px;
+    box-sizing: border-box;
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translate(-50%, 40vh);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.65s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.master-view-wrapper.searching-active {
+    transform: translate(-50%, 30px);
+}
+
+.search-container {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* --- TYPING TITLE HIDING SYSTEM --- */
+.typing-title {
+    color: #ffffff;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 25px;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    /* Smooth simultaneous fade transition timing curve */
+    transition: opacity 0.4s ease, transform 0.4s ease, height 0.4s ease, margin-bottom 0.4s ease;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* FIXED: Guarantees title fades away seamlessly during a search OR a shop creation */
+.master-view-wrapper.searching-active .typing-title {
+    opacity: 0 !important;
+    transform: translateY(-10px) !important;
+    height: 0px !important;
+    margin-bottom: 0px !important;
+    pointer-events: none !important;
+}
+
+.caret {
+    display: inline-block;
+    width: 3px;
+    height: 28px;
+    background-color: #ffffff;
+    margin-left: 5px;
+    animation: blink 0.8s infinite;
+}
+
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ==========================================
+   3. SEARCH ROW STYLING
+   ========================================== */
+.search-row-wrapper {
+    display: flex;
+    width: 100%;
+    max-width: 600px;
+    align-items: center;
+    gap: 0px;
+    margin-bottom: 25px;
+    transition: margin-bottom 0.4s ease;
+}
+
+.master-view-wrapper.searching-active .search-row-wrapper {
+    margin-bottom: 0px;
+}
+
+.back-action-btn {
+    width: 0px;
+    padding: 16px 0px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    background-color: rgba(255, 45, 117, 0.2);
+    border: none !important;
+    border-radius: 0px !important;
+    color: #ffffff;
+    cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: width 0.5s cubic-bezier(0.25, 1, 0.5, 1), padding 0.5s ease, opacity 0.4s ease;
+}
+
+.master-view-wrapper.searching-active .back-action-btn {
+    width: 90px;
+    padding: 16px 15px;
+    opacity: 1;
+    visibility: visible;
+    margin-right: 15px;
+}
+
+.back-action-btn:hover { background-color: rgba(255, 45, 117, 0.4) !important; }
+.search-box-wrapper { flex-grow: 1; }
+
+.search-box-wrapper input {
+    width: 100%;
+    padding: 16px 24px;
+    font-size: 1.1rem;
+    background-color: rgba(43, 5, 26, 0.7);
+    border: none !important;
+    border-radius: 0px !important;
+    color: #ffffff;
+    box-sizing: border-box;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35) !important;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+/* --- PLUS BUTTON HIDING SYSTEM --- */
+.form-trigger-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 0px !important;
+    border: none !important;
+    background-color: rgba(43, 5, 26, 0.5) !important;
+    color: #ffffff !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25) !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    
+    /* Smooth simultaneous fade transition timing curve */
+    transition: opacity 0.3s ease, transform 0.3s ease, height 0.3s ease;
+    opacity: 1;
+    transform: scale(1);
+    height: 48px;
+}
+
+/* FIXED: Guarantees plus button fades away seamlessly during a search OR a shop creation */
+.master-view-wrapper.searching-active .form-trigger-btn {
+    opacity: 0 !important;
+    transform: scale(0.7) !important;
+    height: 0px !important;
+    pointer-events: none !important;
+}
+
+.form-trigger-btn span { font-size: 1.8rem; font-weight: 300; }
+.form-trigger-btn:hover { background-color: rgba(43, 5, 26, 0.8) !important; }
+
+/* ==========================================
+   4. OPTIMIZED 4-COLUMN SEARCH RESULTS GRID
+   ========================================== */
+.results-view {
+    width: 100%;
+    margin-top: 25px;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    opacity: 0;
+    transform: translateY(15px);
+    pointer-events: none;
+    display: none;
+}
+
+.results-view.reveal-results {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+/* Hidden state variant when inspecting specific shop details */
+.results-view.hidden-for-details {
+    opacity: 0 !important;
+    transform: translateY(-20px) !important;
+    pointer-events: none !important;
+}
+
+.results-grid {
+    display: grid;
+    /* FIXED: Optimized to force 4 columns across rows with downsized gaps */
+    grid-template-columns: repeat(4, minmax(220px, 1fr)); 
+    gap: 20px;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: 10px 5px 30px 5px;
+}
+
+.results-grid::-webkit-scrollbar { width: 6px; }
+.results-grid::-webkit-scrollbar-track { background: transparent; }
+.results-grid::-webkit-scrollbar-thumb { background: rgba(188, 45, 255, 0.25); }
+
+/* --- DOWNSIZED COMPACT DIRECTORY CARDS --- */
+.warp-result-card {
+    background-color: rgba(43, 5, 26, 0.65);
+    padding: 18px; /* Slightly tighter padding metrics */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer; /* Clarifies click interactive behavior */
+    opacity: 0;
+    transform: translateY(15px);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.warp-result-card.reveal-card {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.warp-result-card:hover {
+    transform: translateY(-4px);
+    background-color: rgba(58, 8, 35, 0.8);
+    box-shadow: 0 12px 30px rgba(188, 45, 255, 0.15);
+}
+
+.card-top { margin-bottom: 10px; }
+
+.card-title { font-size: 1.15rem; font-weight: 600; margin: 0 0 4px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.card-category { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: #bc2dff; font-weight: 700; }
+
+.card-desc { 
+    font-size: 0.85rem; 
+    line-height: 1.4; 
+    color: rgba(255, 255, 255, 0.75); 
+    margin: 0; 
+    
+    /* Layout properties for clean text truncation */
+    display: -webkit-box; 
+    -webkit-line-clamp: 3; 
+    line-clamp: 3; /* FIXED: Standard version handles the editor warning flag natively */
+    -webkit-box-orient: vertical; 
+    overflow: hidden;
+}
+
+/* ==========================================
+   5. EXPANDED FULL-WIDTH SHOP DISPLAY VIEW (DYNAMIC RESIZING)
+   ========================================== */
+.shop-details-view {
+    display: none;
+    width: 100%;
+    max-width: 1160px;
+    margin-top: 25px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.shop-details-view.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.shop-details-page-card {
+    background-color: rgba(43, 5, 26, 0.65);
+    
+    /* MINIMIZED: Downsized top/bottom padding to hug content snugger */
+    padding: 30px 40px; 
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
+    
+    /* FIXED: Erased the rigid 480px min-height rule entirely so it collapses around short lists */
+    height: auto; 
+    
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.details-main-header {
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+}
+
+.details-category {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #bc2dff;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    display: inline-block;
+    margin-bottom: 6px;
+    
+    /* REMOVED: Border and padding erased from here to kill the double outer box! */
+    border: none !important;
+    padding: 0 !important;
+}
+
+.badge-box {
+    display: inline-block;
+    border: 1px solid rgba(188, 45, 255, 0.5); 
+    padding: 3px 8px;
+    margin-right: 6px;
+    margin-bottom: 6px;
+}
+
+.details-title {
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 4px 0 0 0;
+    color: #ffffff;
+}
+
+.details-desc {
+    font-size: 1.05rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.85);
+    
+    /* MINIMIZED: Shrank bottom margin spacing so table draws tight up top */
+    margin-top: 10px;
+    margin-bottom: 25px; 
+}
+
+/* FIXED: Grid wraps tight to rows dynamically */
+.market-grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    gap: 24px;
+    
+    /* MINIMIZED: Lowered bottom margin gap spacing */
+    margin-bottom: 25px; 
+    
+    /* FIXED: Erased flex-grow so height collapses up naturally if empty */
+    flex-grow: 0; 
+}
+
+.market-column {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    
+    /* FIXED: Keeps columns collapsed tight around their child text lines */
+    height: auto; 
+}
+
+.market-header {
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-align: center;
+    padding-bottom: 12px;
+    margin-bottom: 15px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    text-transform: uppercase;
+}
+
+.buy-header { color: #ffb86c; }  /* Orange/Gold for Buy column header */
+.sell-header { color: #52fa7c; } /* Green for Sell column header */
+
+.market-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.market-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.05rem;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    color: #ffffff;
+}
+
+.market-row:last-child {
+    border-bottom: none;
+}
+
+.market-item-name {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.market-item-price {
+    font-weight: 700;
+    font-family: monospace;
+}
+
+.buy-row .market-item-price { color: #ffb86c; }
+.sell-row .market-item-price { color: #52fa7c; }
+
+.details-copy-btn {
+    width: 100%;
+    padding: 16px;
+    background-color: rgba(188, 45, 255, 0.15);
+    border: none !important;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.details-copy-btn:hover { 
+    background-color: #bc2dff; 
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+}
+
+/* Responsive break layout fallbacks for compact small viewports scale columns */
+@media (max-width: 950px) {
+    .results-grid { grid-template-columns: repeat(2, minmax(200px, 1fr)); }
+}
+
+@media (max-width: 600px) {
+    .results-grid { grid-template-columns: 1fr; }
+    .bottom-footer { flex-direction: column; gap: 10px; text-align: center; }
+}
+
+/* ==========================================
+   6. INVISIBLE BOTTOM FOOTER
+   ========================================== */
+.bottom-footer {
+    position: relative;
+    z-index: 10;
+    width: 100vw;
+    background-color: transparent !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 18px 40px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.footer-link, .wiki-highlight { 
+    color: #ffffff !important; 
+    text-decoration: none; 
+    margin-left: 12px; 
+    transition: opacity 0.2s ease; 
+}
+
+.footer-link:hover, .wiki-highlight:hover { 
+    opacity: 0.8; 
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.6) !important; 
+}
+
+/* ==========================================
+   7. COMPACT CUSTOM SHOP CREATION ENGINE (WITH SCROLL)
+   ========================================== */
+.creation-view {
+    display: none;
+    width: 100%;
+    max-width: 1160px;
+    margin-top: 25px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    
+    /* FIXED: Restricts panel from shooting off screen and forces a custom scroll track */
+    max-height: 65vh;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.creation-view.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Custom internal scrollbar for creation form view container */
+.creation-view::-webkit-scrollbar { width: 6px; }
+.creation-view::-webkit-scrollbar-track { background: transparent; }
+.creation-view::-webkit-scrollbar-thumb { background: rgba(188, 45, 255, 0.25); }
+
+.creation-page-card {
+    background-color: rgba(43, 5, 26, 0.65);
+    padding: 35px 40px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.back-to-home-btn {
+    background: transparent;
+    border: none !important;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 12px;
+    padding: 0;
+    transition: color 0.2s ease;
+}
+
+.back-to-home-btn:hover { color: #ffffff; }
+
+.form-row-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 15px;
+    width: 100%;
+    align-items: start;
+}
+
+.input-field-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    width: 100%;
+    text-align: left;
+}
+
+.input-field-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+}
+
+.input-field-group input, 
+.input-field-group textarea {
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    background-color: rgba(26, 2, 15, 0.75) !important;
+    border: none !important;
+    border-radius: 0px !important;
+    color: #ffffff !important;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.input-field-group textarea { resize: none !important; }
+
+/* FIXED: Custom check box row style tags design patterns */
+.category-checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.checkbox-tag {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: rgba(26, 2, 15, 0.5);
+    padding: 10px 14px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+    transition: background-color 0.2s;
+}
+
+.checkbox-tag:hover {
+    background-color: rgba(188, 45, 255, 0.15);
+    color: #ffffff;
+}
+
+.checkbox-tag input[type="checkbox"] {
+    accent-color: #bc2dff; /* Pure purple theme accent check box filling color hook */
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.creation-input-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: center;
+    width: 100%;
+}
+
+.creation-input-row input {
+    padding: 10px;
+    font-size: 0.9rem;
+    background-color: rgba(26, 2, 15, 0.75);
+    border: none !important;
+    border-radius: 0px !important;
+    color: #ffffff;
+    box-sizing: border-box;
+}
+
+.creation-item-name-input { flex-grow: 2; width: 60%; }
+.creation-item-price-input { flex-grow: 1; width: 30%; text-align: right; font-family: monospace; }
+
+.add-item-row-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: none !important;
+    color: #ffffff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.2s ease;
+}
+
+.buy-accent:hover { background-color: rgba(255, 184, 108, 0.2); color: #ffb86c; }
+.sell-accent:hover { background-color: rgba(82, 250, 124, 0.2); color: #52fa7c; }
+
+.remove-row-btn {
+    background: transparent;
+    border: none !important;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0 5px;
+    transition: color 0.15s ease;
+}
+.remove-row-btn:hover { color: #ff2d75; }
