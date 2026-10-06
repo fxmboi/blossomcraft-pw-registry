@@ -7,42 +7,25 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <!-- DYNAMIC FREE-ROAMING PHYSICS CANVAS -->
     <canvas id="bubbleCanvas"></canvas>
-
-    <!-- APPLE GLASS LAYER TINT -->
     <div class="glass-overlay"></div>
-
-    <!-- MAIN INTERACTIVE INTERFACE WRAPPER -->
     <div class="content" id="mainContent">
         <div class="master-view-wrapper" id="masterView">
-            
-            <!-- VIEW 1: MASTER HUB SEARCH CONTAINER CONTROL PANEL -->
             <div class="search-container" id="searchContainer">
-                <!-- Dynamic Typing Title -->
                 <h1 class="typing-title" id="titleArea"><span id="typedText"></span><span class="caret"></span></h1>
-                
-                <!-- ROW SYSTEM: Bundles Back Button + Search Bar -->
                 <div class="search-row-wrapper">
                     <button class="back-action-btn" id="closeResultsBtn">Back</button>
                     <div class="search-box-wrapper">
                         <input type="text" id="mainSearch" placeholder="Search by warp name, item, category..." autocomplete="off">
                     </div>
                 </div>
-
-                <!-- SQUARE FORM TRIGGER BUTTON -->
                 <button class="form-trigger-btn" id="openFormBtn" title="Register Your Warp">
                     <span>+</span>
                 </button>
             </div>
-
-            <!-- VIEW 2: SEARCH RESULTS GRID WRAPPER -->
             <div class="results-view" id="resultsView">
                 <div class="results-grid" id="resultsGrid"></div>
             </div>
-
-            <!-- VIEW 3: INDEPENDENT DEEP DIVE SHOP PAGE -->
             <div class="shop-details-view" id="shopDetailsView">
                 <div class="shop-details-page-card">
                     <div class="details-main-header">
@@ -50,34 +33,25 @@
                         <h2 class="details-title" id="detTitle"></h2>
                     </div>
                     <p class="details-desc" id="detDesc"></p>
-                    
                     <div class="market-grid-container">
-                        <!-- Left Side: Buy Column -->
                         <div class="market-column">
                             <div class="market-header buy-header">Buy</div>
                             <div class="market-list" id="buyMarketList"></div>
                         </div>
-                        
-                        <!-- Right Side: Sell Column -->
                         <div class="market-column">
                             <div class="market-header sell-header">Sell</div>
                             <div class="market-list" id="sellMarketList"></div>
                         </div>
                     </div>
-                    
                     <button class="details-copy-btn" id="detCopyBtn">Copy /pw Command</button>
                 </div>
             </div>
-
-            <!-- VIEW 4: FULL SHOP CUSTOMIZATION & CREATION DASHBOARD -->
             <div class="creation-view" id="creationView">
                 <form class="creation-page-card" id="warpCreationForm">
                     <div class="details-main-header">
                         <span class="details-category">REGISTRY CONTROL</span>
                         <h2 class="details-title">Setup Your Custom Player Warp</h2>
                     </div>
-                    
-                    <!-- Core Info Input Fields (Warp Name + Checkboxes) -->
                     <div class="form-row-split">
                         <div class="input-field-group">
                             <label for="newWarpName">Warp Name</label>
@@ -94,8 +68,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Shop Description Field with Live Counter -->
                     <div class="input-field-group">
                         <label for="newWarpDesc">
                             Shop Description 
@@ -103,40 +75,30 @@
                         </label>
                         <textarea id="newWarpDesc" rows="3" placeholder="What are your rules? What items do you specialize in?" required autocomplete="off" maxlength="150"></textarea>
                     </div>
-
-                    <!-- Marketplace Grid Dynamic Editor Inputs -->
                     <div class="market-grid-container">
                         <!-- Left Side: Buy Input Entries -->
                         <div class="market-column">
                             <div class="market-header buy-header">Items You Want To Buy</div>
                             <div class="market-list" id="formBuyList">
-                                <!-- Dynamic Input Fields get injected here by app.js -->
                             </div>
                             <button type="button" class="add-item-row-btn buy-accent" onclick="addNewMarketInputRow('buy')">+ Add Buy Item</button>
                         </div>
-                        
-                        <!-- Right Side: Sell Input Entries -->
                         <div class="market-column">
                             <div class="market-header sell-header">Items You Want To Sell</div>
                             <div class="market-list" id="formSellList">
-                                <!-- Dynamic Input Fields get injected here by app.js -->
                             </div>
                             <button type="button" class="add-item-row-btn sell-accent" onclick="addNewMarketInputRow('sell')">+ Add Sell Item</button>
                         </div>
                     </div>
-
                     <button type="submit" class="details-copy-btn" style="background-color: #bc2dff; margin-top: 15px;">Publish Warp Live</button>
                 </form>
             </div>
             
         </div>
     </div>
-
-        <!-- FLUSH BOTTOM FOOTER INFORMATIONAL SYSTEM -->
     <footer class="bottom-footer">
         <div class="footer-left">
             <span>© 2026 Warp Hub. All Rights Reserved.</span>
-            <!-- FIXED: Changed to a standard link that opens in a fresh browser tab -->
             <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.en" target="_blank" class="footer-link">License agreement</a>
         </div>
         <div class="footer-right">
@@ -144,7 +106,6 @@
             <a href="https://blossomcraft.org/wiki.html" target="_blank" class="footer-link wiki-highlight">BlossomCraft Wiki</a>
         </div>
     </footer>
-
     <script src="app.js"></script>
 </body>
 </html>
