@@ -158,11 +158,10 @@ function executeSearch(query) {
                hasMatchingItem;
     });
 
-        if (matches.length === 0) {
-        resultsGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; opacity: 0.6; padding-top: 40px; color: #ffffff;">No matching player shops found for that query.</p>`;
+    if (matches.length === 0) {
+        resultsGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; opacity: 0.6; padding-top: 40px; color: #ffffff;">No matching player warps found for that query.</p>`;
     } else {
         matches.forEach(warp => {
-            
             const serverName = warp.server || "Tulip";
             let serverColorClass = "server-tulip";
             
@@ -177,7 +176,6 @@ function executeSearch(query) {
                     <span class="card-category">${warp.category}</span>
                     <h3 class="card-title">/pw ${warp.name}</h3>
                     <p class="card-desc">${warp.desc}</p>
-                    <!-- FIXED: Draws the stylized, custom colored server realm outline tag here -->
                     <span class="card-server-badge ${serverColorClass}">${serverName}</span>
                 </div>
             `;
@@ -185,7 +183,7 @@ function executeSearch(query) {
             resultsGrid.appendChild(card);
         });
     }
-    
+
     resultsView.style.display = 'block';
     setTimeout(() => {
         resultsView.classList.add('reveal-results');
@@ -197,6 +195,7 @@ function executeSearch(query) {
 }
 function loadShopDetailsPage(warp) {
     activeShopTarget = warp.name;
+    resultsView.classList.add('hidden-for-details');
     
     const buyList = document.getElementById('buyMarketList');
     const sellList = document.getElementById('sellMarketList');
@@ -204,6 +203,19 @@ function loadShopDetailsPage(warp) {
     sellList.innerHTML = '';
     
     detCategory.innerHTML = '';
+    
+    const serverBadge = document.createElement('span');
+    serverBadge.className = 'badge-box';
+    
+    const sName = warp.server || "Tulip";
+    if (sName.toLowerCase() === "lotus") { serverBadge.style.borderColor = "#52fa7c"; serverBadge.style.color = "#52fa7c"; }
+    else if (sName.toLowerCase() === "spirit") { serverBadge.style.borderColor = "#8be9fd"; serverBadge.style.color = "#8be9fd"; }
+    else if (sName.toLowerCase() === "cherry") { serverBadge.style.borderColor = "#ff79c6"; serverBadge.style.color = "#ff79c6"; }
+    else { serverBadge.style.borderColor = "#ffb86c"; serverBadge.style.color = "#ffb86c"; }
+    
+    serverBadge.textContent = sName;
+    detCategory.appendChild(serverBadge);
+
     const categoriesArray = warp.category.split(" / ");
     categoriesArray.forEach(cat => {
         const badge = document.createElement('span');
@@ -243,7 +255,7 @@ function loadShopDetailsPage(warp) {
     detCopyBtn.style.backgroundColor = "";
 
     setTimeout(() => {
-        if(resultsView) resultsView.style.display = 'none';
+        resultsView.style.display = 'none';
         shopDetailsView.style.display = 'block';
         setTimeout(() => { shopDetailsView.classList.add('active'); }, 50);
     }, 300);
@@ -324,6 +336,7 @@ warpCreationForm.addEventListener('submit', async function(e) {
     
     const nameValue = document.getElementById('newWarpName').value.replace(/\s+/g, '');
     const ownerValue = document.getElementById('newWarpOwner').value.replace(/\s+/g, ''); 
+    const serverValue = document.getElementById('newWarpServer').value;
     const descValue = document.getElementById('newWarpDesc').value;
     const submitButton = warpCreationForm.querySelector('button[type="submit"]');
     
@@ -333,7 +346,7 @@ warpCreationForm.addEventListener('submit', async function(e) {
     });
 
     if (selectedCategories.length === 0) {
-        alert("Please pick at least one category tag selection!");
+        alert("⚠️ Please pick at least one category tag selection!");
         return;
     }
 
@@ -353,6 +366,7 @@ warpCreationForm.addEventListener('submit', async function(e) {
     const payload = {
         name: nameValue,
         owner: ownerValue, 
+        server: serverValue, 
         category: selectedCategories.join(" / "),
         desc: descValue,
         prices: collectedPrices
@@ -370,15 +384,15 @@ warpCreationForm.addEventListener('submit', async function(e) {
             body: JSON.stringify(payload)
         });
 
-        alert(` /pw ${nameValue} has been permanently saved to the Google Sheets Cloud Database!`);
+        alert(`🌸 /pw ${nameValue} has been permanently saved to the Google Sheets Cloud Database!`);
         await fetchLiveCloudDatabase();
         returnToHomeFromForm();
         
     } catch (error) {
-        alert("Cloud upload connection dropped. Check your network console logs.");
+        alert("⚠️ Cloud upload connection dropped. Check your network console logs.");
         console.error(error);
     } finally {
-        submitButton.innerHTML = "Publish Warp Live";
+        submitButton.innerHTML = "🌸 Publish Warp Live";
         submitButton.style.backgroundColor = "#bc2dff";
         submitButton.disabled = false;
     }
@@ -407,9 +421,9 @@ closeResultsBtn.addEventListener('click', () => {
         shopDetailsView.classList.remove('active');
         setTimeout(() => {
             shopDetailsView.style.display = 'none';
-            if(resultsView) resultsView.style.display = 'block';
+            resultsView.style.display = 'block';
             setTimeout(() => {
-                if(resultsView) resultsView.classList.remove('hidden-for-details');
+                resultsView.classList.remove('hidden-for-details');
                 activeShopTarget = null;
             }, 50);
         }, 400);
@@ -418,11 +432,11 @@ closeResultsBtn.addEventListener('click', () => {
         returnToHomeFromForm();
     }
     else {
-        if(resultsView) resultsView.classList.remove('reveal-results');
+        resultsView.classList.remove('reveal-results');
         masterView.classList.remove('searching-active');
         
         setTimeout(() => {
-            if(resultsView) resultsView.style.display = 'none';
+            resultsView.style.display = 'none';
             resultsGrid.innerHTML = '';
             searchInput.value = '';
             activeShopTarget = null;
