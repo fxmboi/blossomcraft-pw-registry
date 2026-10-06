@@ -158,10 +158,18 @@ function executeSearch(query) {
                hasMatchingItem;
     });
 
-    if (matches.length === 0) {
-        resultsGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; opacity: 0.6; padding-top: 40px; color: #ffffff;">No matching /pw player shops found for that query.</p>`;
+        if (matches.length === 0) {
+        resultsGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; opacity: 0.6; padding-top: 40px; color: #ffffff;">No matching player shops found for that query.</p>`;
     } else {
         matches.forEach(warp => {
+            
+            const serverName = warp.server || "Tulip";
+            let serverColorClass = "server-tulip";
+            
+            if (serverName.toLowerCase() === "lotus") serverColorClass = "server-lotus";
+            else if (serverName.toLowerCase() === "spirit") serverColorClass = "server-spirit";
+            else if (serverName.toLowerCase() === "cherry") serverColorClass = "server-cherry";
+
             const card = document.createElement('div');
             card.className = 'warp-result-card';
             card.innerHTML = `
@@ -169,13 +177,15 @@ function executeSearch(query) {
                     <span class="card-category">${warp.category}</span>
                     <h3 class="card-title">/pw ${warp.name}</h3>
                     <p class="card-desc">${warp.desc}</p>
+                    <!-- FIXED: Draws the stylized, custom colored server realm outline tag here -->
+                    <span class="card-server-badge ${serverColorClass}">${serverName}</span>
                 </div>
             `;
             card.addEventListener('click', () => { loadShopDetailsPage(warp); });
             resultsGrid.appendChild(card);
         });
     }
-
+    
     resultsView.style.display = 'block';
     setTimeout(() => {
         resultsView.classList.add('reveal-results');
