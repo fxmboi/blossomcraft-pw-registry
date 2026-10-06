@@ -458,6 +458,20 @@ body {
     text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
 }
 
+.details-owner-badge {
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.4); /* Subtly dimmed out so it sits nicely behind the main title */
+    margin-left: 12px;
+    display: inline-block;
+}
+
+/* Fix mobile responsiveness adjustments for headings text wrap */
+@media (max-width: 650px) {
+    .details-title { display: flex; flex-direction: column; gap: 4px; }
+    .details-owner-badge { margin-left: 0px; font-size: 0.95rem; }
+}
+
 /* Responsive break layout fallbacks for compact small viewports scale columns */
 @media (max-width: 950px) {
     .results-grid { grid-template-columns: repeat(2, minmax(200px, 1fr)); }
