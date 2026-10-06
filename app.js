@@ -1,6 +1,3 @@
-// ==========================================
-// 1. LIQUID WAVE BACKGROUND SIMULATION
-// ==========================================
 const canvas = document.getElementById('bubbleCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -44,10 +41,6 @@ function animateFluid() {
 }
 animateFluid();
 
-// ==========================================
-// 2. AUTOMATED TYPING TEXT WRITER ENGINE (SLOWER & EXPANDED)
-// ==========================================
-// Expanded phrase registry list - feel free to add, remove, or edit these lines!
 const phrases = [
     "What shop are we visiting?",
     "What items do you need?",
@@ -74,11 +67,9 @@ function typeMachine() {
 
         if (characterIndex === currentPhrase.length) {
             isDeleting = true;
-            // SLOWER: Changed from 2000 to 3500 (Waits 3.5 seconds before starting to erase)
             setTimeout(typeMachine, 3500); 
             return;
         }
-        // SLOWER: Changed from 80 to 140 (Letters tick out much more calmly and slowly)
         setTimeout(typeMachine, 140); 
     } else {
         textElement.textContent = currentPhrase.substring(0, characterIndex - 1);
@@ -87,11 +78,9 @@ function typeMachine() {
         if (characterIndex === 0) {
             isDeleting = false;
             phraseIndex = (phraseIndex + 1) % phrases.length;
-            // SLOWER: Changed from 400 to 800 (Waits longer after fully erasing before typing the next line)
             setTimeout(typeMachine, 800); 
             return;
         }
-        // SLOWER: Changed from 40 to 70 (Erases letters backward more smoothly and deliberately)
         setTimeout(typeMachine, 70); 
     }
 }
@@ -99,17 +88,10 @@ function typeMachine() {
 document.addEventListener("DOMContentLoaded", () => {
     setTimeout(typeMachine, 500);
 });
-
-// ==========================================
-// 3. CLOUD SHEET ENDPOINT DATABASE CONTROLLER
-// ==========================================
-// YOUR LIVE GOOGLE SCRIPT URL ENDPOINT DEPLOYMENT LINK POSITIONED HERE
 const GOOGLE_DATABASE_API_URL = "https://script.google.com/macros/s/AKfycbyNNr75PGcTEAW-Af8L8lRjuPXaJD-3TrR2tYfGzL00o6UVQIMq0FhVXkFoxhU5H3GX/exec";
 
-// The hardcoded backup variable is dropped; website starts with a clean virtual registry array
 let warpRegistryData = [];
 
-// Automatic Data Downloader: Downloads all player warps from Google Sheet on start
 async function fetchLiveCloudDatabase() {
     try {
         const response = await fetch(GOOGLE_DATABASE_API_URL);
@@ -122,7 +104,7 @@ async function fetchLiveCloudDatabase() {
         console.error("Cloud synchronisation fallback halt:", error);
     }
 }
-fetchLiveCloudDatabase(); // Fires automatically on load parameters
+fetchLiveCloudDatabase(); 
 
 const searchInput = document.getElementById('mainSearch');
 const masterView = document.getElementById('masterView');
@@ -164,12 +146,14 @@ function executeSearch(query) {
         const normalizedQuery = query.trim().toLowerCase();
         const normalizedName = warp.name.toLowerCase();
         const normalizedDesc = warp.desc.toLowerCase();
+        const normalizedOwner = warp.owner ? warp.owner.toLowerCase() : '';
         
         const individualCategories = warp.category.toLowerCase().split(' / ').map(c => c.trim());
         const hasMatchingItem = warp.prices ? warp.prices.some(itemObj => itemObj.name.toLowerCase().includes(normalizedQuery)) : false;
 
         return normalizedName.includes(normalizedQuery) || 
                normalizedDesc.includes(normalizedQuery) ||
+               normalizedOwner.includes(normalizedQuery) ||
                individualCategories.some(cat => cat.includes(normalizedQuery)) ||
                hasMatchingItem;
     });
@@ -203,7 +187,6 @@ function executeSearch(query) {
 }
 function loadShopDetailsPage(warp) {
     activeShopTarget = warp.name;
-    resultsView.classList.add('hidden-for-details');
     
     const buyList = document.getElementById('buyMarketList');
     const sellList = document.getElementById('sellMarketList');
@@ -219,7 +202,8 @@ function loadShopDetailsPage(warp) {
         detCategory.appendChild(badge);
     });
 
-    detTitle.textContent = `/pw ${warp.name}`;
+    const ownerText = warp.owner ? `<span class="details-owner-badge">by ${warp.owner}</span>` : '';
+    detTitle.innerHTML = `/pw ${warp.name} ${ownerText}`;
     detDesc.textContent = warp.desc;
     
     let totalBuyItems = 0;
@@ -249,7 +233,7 @@ function loadShopDetailsPage(warp) {
     detCopyBtn.style.backgroundColor = "";
 
     setTimeout(() => {
-        resultsView.style.display = 'none';
+        if(resultsView) resultsView.style.display = 'none';
         shopDetailsView.style.display = 'block';
         setTimeout(() => { shopDetailsView.classList.add('active'); }, 50);
     }, 300);
@@ -265,9 +249,6 @@ if (detCopyBtn) {
     });
 }
 
-// ==========================================
-// SHOP CREATION FORM SYSTEM (CLOUD DATA UPLOAD)
-// ==========================================
 const creationView = document.getElementById('creationView');
 const openFormBtn = document.getElementById('openFormBtn');
 const warpCreationForm = document.getElementById('warpCreationForm');
@@ -328,11 +309,11 @@ if (descriptionTextarea && charCounter) {
     });
 }
 
-// UPLOAD CONTROLLER: Submits form input variables directly into the permanent cloud database sheet via fetch POST
 warpCreationForm.addEventListener('submit', async function(e) {
     e.preventDefault();
     
     const nameValue = document.getElementById('newWarpName').value.replace(/\s+/g, '');
+    const ownerValue = document.getElementById('newWarpOwner').value.replace(/\s+/g, ''); 
     const descValue = document.getElementById('newWarpDesc').value;
     const submitButton = warpCreationForm.querySelector('button[type="submit"]');
     
@@ -361,28 +342,25 @@ warpCreationForm.addEventListener('submit', async function(e) {
 
     const payload = {
         name: nameValue,
+        owner: ownerValue, 
         category: selectedCategories.join(" / "),
         desc: descValue,
         prices: collectedPrices
     };
 
     try {
-        // Visual loading feedback tracker state
-        submitButton.innerHTML = "Uploading to the database.. :3";
+        submitButton.innerHTML = "⏳ Uploading to Cloud Sheets...";
         submitButton.style.backgroundColor = "#ffb86c";
         submitButton.disabled = true;
 
-        // Push data variables straight to your live Google macro script link
-        const response = await fetch(GOOGLE_DATABASE_API_URL, {
+        await fetch(GOOGLE_DATABASE_API_URL, {
             method: "POST",
-            mode: "no-cors", // Bypasses browser cross-origin policy blockers seamlessly
+            mode: "no-cors",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
         });
 
-        alert(`🌸 /pw ${nameValue} has been permanently saved to the Google Sheets Cloud Database!`);
-        
-        // Re-download the live sheets data list instantly so the new shop is available on search without page refresh
+        alert(` /pw ${nameValue} has been permanently saved to the Google Sheets Cloud Database!`);
         await fetchLiveCloudDatabase();
         returnToHomeFromForm();
         
@@ -390,7 +368,7 @@ warpCreationForm.addEventListener('submit', async function(e) {
         alert("Cloud upload connection dropped. Check your network console logs.");
         console.error(error);
     } finally {
-        submitButton.innerHTML = "Publish Shop";
+        submitButton.innerHTML = "Publish Warp Live";
         submitButton.style.backgroundColor = "#bc2dff";
         submitButton.disabled = false;
     }
@@ -419,9 +397,9 @@ closeResultsBtn.addEventListener('click', () => {
         shopDetailsView.classList.remove('active');
         setTimeout(() => {
             shopDetailsView.style.display = 'none';
-            resultsView.style.display = 'block';
+            if(resultsView) resultsView.style.display = 'block';
             setTimeout(() => {
-                resultsView.classList.remove('hidden-for-details');
+                if(resultsView) resultsView.classList.remove('hidden-for-details');
                 activeShopTarget = null;
             }, 50);
         }, 400);
@@ -430,11 +408,11 @@ closeResultsBtn.addEventListener('click', () => {
         returnToHomeFromForm();
     }
     else {
-        resultsView.classList.remove('reveal-results');
+        if(resultsView) resultsView.classList.remove('reveal-results');
         masterView.classList.remove('searching-active');
         
         setTimeout(() => {
-            resultsView.style.display = 'none';
+            if(resultsView) resultsView.style.display = 'none';
             resultsGrid.innerHTML = '';
             searchInput.value = '';
             activeShopTarget = null;
