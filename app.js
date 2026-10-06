@@ -45,13 +45,18 @@ function animateFluid() {
 animateFluid();
 
 // ==========================================
-// 2. AUTOMATED TYPING TEXT WRITER ENGINE
+// 2. AUTOMATED TYPING TEXT WRITER ENGINE (SLOWER & EXPANDED)
 // ==========================================
+// Expanded phrase registry list - feel free to add, remove, or edit these lines!
 const phrases = [
     "What shop are we visiting?",
-    "What item do you need?",
+    "What items do you need?",
     "Looking for a public farm?",
-    "Search for active /pw names..."
+    "≽(•⩊ •マ≼ Welcome mrow..",
+    "Found what you need?",
+    "BlossomCraft is the best!",
+    "Looking for bulk building blocks?",
+    "Mueheheheheh >:3c"
 ];
 
 let phraseIndex = 0;
@@ -69,10 +74,12 @@ function typeMachine() {
 
         if (characterIndex === currentPhrase.length) {
             isDeleting = true;
-            setTimeout(typeMachine, 2000); 
+            // SLOWER: Changed from 2000 to 3500 (Waits 3.5 seconds before starting to erase)
+            setTimeout(typeMachine, 3500); 
             return;
         }
-        setTimeout(typeMachine, 80); 
+        // SLOWER: Changed from 80 to 140 (Letters tick out much more calmly and slowly)
+        setTimeout(typeMachine, 140); 
     } else {
         textElement.textContent = currentPhrase.substring(0, characterIndex - 1);
         characterIndex--;
@@ -80,16 +87,19 @@ function typeMachine() {
         if (characterIndex === 0) {
             isDeleting = false;
             phraseIndex = (phraseIndex + 1) % phrases.length;
-            setTimeout(typeMachine, 400); 
+            // SLOWER: Changed from 400 to 800 (Waits longer after fully erasing before typing the next line)
+            setTimeout(typeMachine, 800); 
             return;
         }
-        setTimeout(typeMachine, 40); 
+        // SLOWER: Changed from 40 to 70 (Erases letters backward more smoothly and deliberately)
+        setTimeout(typeMachine, 70); 
     }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
     setTimeout(typeMachine, 500);
 });
+
 // ==========================================
 // 3. CLOUD SHEET ENDPOINT DATABASE CONTROLLER
 // ==========================================
