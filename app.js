@@ -235,7 +235,7 @@ function loadShopDetailsPage(warp) {
     if (totalBuyItems === 0) buyList.innerHTML = '<p style="opacity:0.4; text-align:center; font-size:0.9rem; margin:15px 0;">Not buying anything.</p>';
     if (totalSellItems === 0) sellList.innerHTML = '<p style="opacity:0.4; text-align:center; font-size:0.9rem; margin:15px 0;">Not selling anything.</p>';
     
-    detCopyBtn.innerHTML = "📋 Copy /pw Command";
+    detCopyBtn.innerHTML = "Copy /pw Command";
     detCopyBtn.style.backgroundColor = "";
 
     setTimeout(() => {
@@ -249,7 +249,7 @@ if (detCopyBtn) {
     detCopyBtn.addEventListener('click', function() {
         if (!activeShopTarget) return;
         navigator.clipboard.writeText(`/pw ${activeShopTarget}`).then(() => {
-            detCopyBtn.innerHTML = "✅ Command Copied!";
+            detCopyBtn.innerHTML = "Command Copied!";
             detCopyBtn.style.backgroundColor = "#28a745";
         });
     });
@@ -332,7 +332,7 @@ warpCreationForm.addEventListener('submit', async function(e) {
     });
 
     if (selectedCategories.length === 0) {
-        alert("⚠️ Please pick at least one category tag selection!");
+        alert("Please pick at least one category tag selection!");
         return;
     }
 
@@ -358,7 +358,7 @@ warpCreationForm.addEventListener('submit', async function(e) {
 
     try {
         // Visual loading feedback tracker state
-        submitButton.innerHTML = "⏳ Uploading to Cloud Sheets...";
+        submitButton.innerHTML = "Uploading to the database.. :3";
         submitButton.style.backgroundColor = "#ffb86c";
         submitButton.disabled = true;
 
@@ -377,10 +377,10 @@ warpCreationForm.addEventListener('submit', async function(e) {
         returnToHomeFromForm();
         
     } catch (error) {
-        alert("⚠️ Cloud upload connection dropped. Check your network console logs.");
+        alert("Cloud upload connection dropped. Check your network console logs.");
         console.error(error);
     } finally {
-        submitButton.innerHTML = "🌸 Publish Warp Live";
+        submitButton.innerHTML = "Publish Shop";
         submitButton.style.backgroundColor = "#bc2dff";
         submitButton.disabled = false;
     }
