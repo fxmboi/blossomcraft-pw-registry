@@ -303,36 +303,40 @@ openFormBtn.addEventListener('click', () => {
     }, 200);
 });
 
-const MC_ITEM_PRESETS = [
-    "Blossom Sword", "Blossom Pickaxe", "Blossom Shovel", "Blossom Axe", 
-    "Blossom Helmet", "Blossom Chestplate", "Blossom Leggings", "Blossom Boots",
-    "Sakura Crate Key", "Lotus Crate Key", "Iris Crate Key", "Tulip Crate Key", "Cherry Crate Key",
-    "Diamond", "Netherite Ingot", "Netherite Scrap", "Iron Ingot", "Gold Ingot", "Copper Ingot", 
-    "Coal", "Charcoal", "Emerald", "Lapis Lazuli", "Redstone Dust", "Quartz",
-    "Elytra", "Shulker Box", "Beacon", "Nether Star", "Totem of Undying", 
-    "Enchanted Golden Apple", "Golden Apple", "Experience Bottle", "Sponge", "Sea Lantern",
-    "Oak Logs x64", "Spruce Logs x64", "Birch Logs x64", "Jungle Logs x64", 
-    "Acacia Logs x64", "Dark Oak Logs x64", "Mangrove Logs x64", "Cherry Logs x64", 
-    "Cactus x64", "Bamboo x64", "Sugar Cane x64",
-    "Blaze Rod x16", "Ender Pearl x16", "Slimeball x64", "Gunpowder x64", 
-    "String x64", "Bone x64", "Rotten Flesh x64", "Spider Eye x64"
-];
+async function loadItemPresetsFromJSON() {
+    try {
+        const response = await fetch("data.json");
+        const itemPresetsArray = await response.json();
+        
+        if (Array.isArray(itemPresetsArray)) {
+            let datalist = document.getElementById("mcItemPresets");
+            if (!datalist) {
+                datalist = document.createElement("datalist");
+                datalist.id = "mcItemPresets";
+                document.body.appendChild(datalist);
+            }
+            
+            let optionsHTML = "";
+            itemPresetsArray.forEach(item => {
+                optionsHTML += `<option value="${item}">${item}</option>`;
+            });
+            datalist.innerHTML = optionsHTML;
+            console.log("Successfully loaded presets from data.json into master datalist!");
+        }
+    } catch (error) {
+        console.error("Failed to read items from data.json file:", error);
+    }
+}
+loadItemPresetsFromJSON();
 
 window.addNewMarketInputRow = function(type) {
     const targetList = type === 'buy' ? document.getElementById('formBuyList') : document.getElementById('formSellList');
     const placeholderName = type === 'buy' ? 'e.g., Diamond x1' : 'e.g., Oak Logs x64';
-    const uniqueListId = `presets-${Math.random().toString(36).substr(2, 9)}`;
     
-    let optionsHTML = "";
-    MC_ITEM_PRESETS.forEach(item => {
-        optionsHTML += `<option value="${item}">${item}</option>`;
-    });
-
     const row = document.createElement('div');
     row.className = 'creation-input-row';
     row.innerHTML = `
-        <input type="text" class="creation-item-name-input" placeholder="${placeholderName}" list="${uniqueListId}" required>
-        <datalist id="${uniqueListId}">${optionsHTML}</datalist>
+        <input type="text" class="creation-item-name-input" placeholder="${placeholderName}" list="mcItemPresets" required>
         <input type="text" class="creation-item-price-input" placeholder="100" required
                oninput="this.value = this.value.replace(/[^0-9]/g, '')">
         <button type="button" class="remove-row-btn" onclick="this.parentElement.remove()">✕</button>
