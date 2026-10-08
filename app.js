@@ -373,7 +373,7 @@ warpCreationForm.addEventListener('submit', async function(e) {
     const serverValue = document.getElementById('newWarpServer').value;
     const descValue = document.getElementById('newWarpDesc').value;
     
-    // Selects our new independent action button wrapper to update the text states
+    // FIXED: Maps tracking feedback text directly to our unified header submit button
     const submitButton = document.getElementById('realPublishBtn');
     
     const selectedCategories = [];
@@ -382,7 +382,7 @@ warpCreationForm.addEventListener('submit', async function(e) {
     });
 
     if (selectedCategories.length === 0) {
-        alert("⚠️ Please pick at least one category tag selection!");
+        alert("Please pick at least one category tag selection!");
         return;
     }
 
@@ -409,7 +409,7 @@ warpCreationForm.addEventListener('submit', async function(e) {
     };
 
     try {
-        submitButton.innerHTML = "⏳ Uploading to Cloud Sheets...";
+        submitButton.innerHTML = "⏳ Uploading...";
         submitButton.style.backgroundColor = "#ffb86c";
         submitButton.disabled = true;
 
@@ -425,10 +425,10 @@ warpCreationForm.addEventListener('submit', async function(e) {
         returnToHomeFromForm();
         
     } catch (error) {
-        alert("⚠️ Cloud upload connection dropped. Check your network console logs.");
+        alert("Cloud upload connection dropped. Check your network console logs.");
         console.error(error);
     } finally {
-        submitButton.innerHTML = "🌸 Publish Warp Live";
+        submitButton.innerHTML = "Publish Warp Live";
         submitButton.style.backgroundColor = "#bc2dff";
         submitButton.disabled = false;
     }
