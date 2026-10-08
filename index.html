@@ -11,6 +11,21 @@
     <div class="glass-overlay"></div>
     <div class="content" id="mainContent">
         <div class="master-view-wrapper" id="masterView">
+            
+            <div class="user-profile-widget" id="userProfileWidget">
+
+                <div class="profile-login-box" id="profileLoginBox">
+                    <input type="text" id="profileUsernameInput" placeholder="Enter MC Username..." autocomplete="off">
+                    <button type="button" id="saveProfileBtn">Link</button>
+                </div>
+                
+                <div class="profile-display-box" id="profileDisplayBox" style="display: none;">
+                    <img id="profileAvatarImg" src="" alt="MC Face">
+                    <span id="profileNameSpan"></span>
+                    <button type="button" id="clearProfileBtn" title="Unlink Account">✕</button>
+                </div>
+            </div>
+
             <div class="search-container" id="searchContainer">
                 <h1 class="typing-title" id="titleArea"><span id="typedText"></span><span class="caret"></span></h1>
                 <div class="search-row-wrapper">
