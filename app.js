@@ -518,3 +518,87 @@ closeResultsBtn.addEventListener('click', () => {
         }, 650);
     }
 });
+
+// ==========================================
+// 5. PERSISTENT MINECRAFT PROFILE IDENTITY ENGINE
+// ==========================================
+const loginBox = document.getElementById('profileLoginBox');
+const displayBox = document.getElementById('profileDisplayBox');
+const usernameInput = document.getElementById('profileUsernameInput');
+const saveProfileBtn = document.getElementById('saveProfileBtn');
+const avatarImg = document.getElementById('profileAvatarImg');
+const nameSpan = document.getElementById('profileNameSpan');
+const clearProfileBtn = document.getElementById('clearProfileBtn');
+
+function updateProfileWidgetUI() {
+    // Look up local storage memory data tags
+    const savedName = localStorage.getItem('blossom_mc_user');
+    
+    if (savedName) {
+        // State B Activation: Hide input bar, configure image sources and usernames
+        loginBox.style.display = 'none';
+        displayBox.style.display = 'flex';
+        nameSpan.textContent = savedName;
+        
+        // Uses the free, ultra-reliable Minotar API to pull the 8-bit helmet avatar box securely
+        avatarImg.src = `https://minotar.net{savedName}/24.png`;
+        
+        // AUTO-FILL ASSISTANT: If they open the shop creation panel, pre-fill their name automatically!
+        const formOwnerField = document.getElementById('newWarpOwner');
+        if (formOwnerField) {
+            formOwnerField.value = savedName;
+        }
+    } else {
+        // State A Activation: Show the clean search logger text inputs fields row
+        loginBox.style.display = 'flex';
+        displayBox.style.display = 'none';
+        nameSpan.textContent = '';
+        avatarImg.src = '';
+    }
+}
+
+if (saveProfileBtn && usernameInput) {
+    saveProfileBtn.addEventListener('click', () => {
+        const inputName = usernameInput.value.replace(/\s+/g, '').trim();
+        if (inputName !== "") {
+            localStorage.setItem('blossom_mc_user', inputName);
+            usernameInput.value = '';
+            updateProfileWidgetUI();
+        }
+    });
+
+    // Enables hitting enter inside the small widget box to link accounts quickly
+    usernameInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            saveProfileBtn.click();
+        }
+    });
+}
+
+if (clearProfileBtn) {
+    clearProfileBtn.addEventListener('click', () => {
+        localStorage.removeItem('blossom_mc_user');
+        
+        // Clear out form helper value maps too so fields reset empty
+        const formOwnerField = document.getElementById('newWarpOwner');
+        if (formOwnerField) formOwnerField.value = '';
+        
+        updateProfileWidgetUI();
+    });
+}
+
+// Ensure the profile auto-loads immediately as soon as the page boots up
+document.addEventListener('DOMContentLoaded', () => {
+    updateProfileWidgetUI();
+});
+
+// Extra Hook: Also trigger auto-fill checks if they click your "+" panel button row tracking grids
+openFormBtn.addEventListener('click', () => {
+    setTimeout(() => {
+        const savedName = localStorage.getItem('blossom_mc_user');
+        const formOwnerField = document.getElementById('newWarpOwner');
+        if (savedName && formOwnerField) {
+            formOwnerField.value = savedName;
+        }
+    }, 100);
+});
