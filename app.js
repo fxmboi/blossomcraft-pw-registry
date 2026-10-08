@@ -531,29 +531,25 @@ const nameSpan = document.getElementById('profileNameSpan');
 const clearProfileBtn = document.getElementById('clearProfileBtn');
 
 function updateProfileWidgetUI() {
-    // Look up local storage memory data tags
     const savedName = localStorage.getItem('blossom_mc_user');
     
     if (savedName) {
-        // State B Activation: Hide input bar, configure image sources and usernames
-        loginBox.style.display = 'none';
-        displayBox.style.display = 'flex';
-        nameSpan.textContent = savedName;
+        if(loginBox) loginBox.style.display = 'none';
+        if(displayBox) displayBox.style.display = 'flex';
+        if(nameSpan) nameSpan.textContent = savedName;
         
-        // Uses the free, ultra-reliable Minotar API to pull the 8-bit helmet avatar box securely
-        avatarImg.src = `https://minotar.net{savedName}/24.png`;
+        // FIXED: Switched to a robust avatar provider to render your helmet/head cleanly
+        if(avatarImg) avatarImg.src = `https://mc-heads.net{savedName}/42.png`;
         
-        // AUTO-FILL ASSISTANT: If they open the shop creation panel, pre-fill their name automatically!
         const formOwnerField = document.getElementById('newWarpOwner');
         if (formOwnerField) {
             formOwnerField.value = savedName;
         }
     } else {
-        // State A Activation: Show the clean search logger text inputs fields row
-        loginBox.style.display = 'flex';
-        displayBox.style.display = 'none';
-        nameSpan.textContent = '';
-        avatarImg.src = '';
+        if(loginBox) loginBox.style.display = 'flex';
+        if(displayBox) displayBox.style.display = 'none';
+        if(nameSpan) nameSpan.textContent = '';
+        if(avatarImg) avatarImg.src = '';
     }
 }
 
@@ -567,7 +563,6 @@ if (saveProfileBtn && usernameInput) {
         }
     });
 
-    // Enables hitting enter inside the small widget box to link accounts quickly
     usernameInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             saveProfileBtn.click();
@@ -578,27 +573,25 @@ if (saveProfileBtn && usernameInput) {
 if (clearProfileBtn) {
     clearProfileBtn.addEventListener('click', () => {
         localStorage.removeItem('blossom_mc_user');
-        
-        // Clear out form helper value maps too so fields reset empty
         const formOwnerField = document.getElementById('newWarpOwner');
         if (formOwnerField) formOwnerField.value = '';
-        
         updateProfileWidgetUI();
     });
 }
 
-// Ensure the profile auto-loads immediately as soon as the page boots up
-document.addEventListener('DOMContentLoaded', () => {
-    updateProfileWidgetUI();
-});
+// FIXED: Fires the initialization function safely across multiple layout rendering tracking hooks
+updateProfileWidgetUI();
+window.addEventListener('load', updateProfileWidgetUI);
+document.addEventListener('DOMContentLoaded', updateProfileWidgetUI);
 
-// Extra Hook: Also trigger auto-fill checks if they click your "+" panel button row tracking grids
-openFormBtn.addEventListener('click', () => {
-    setTimeout(() => {
-        const savedName = localStorage.getItem('blossom_mc_user');
-        const formOwnerField = document.getElementById('newWarpOwner');
-        if (savedName && formOwnerField) {
-            formOwnerField.value = savedName;
-        }
-    }, 100);
-});
+if (openFormBtn) {
+    openFormBtn.addEventListener('click', () => {
+        setTimeout(() => {
+            const savedName = localStorage.getItem('blossom_mc_user');
+            const formOwnerField = document.getElementById('newWarpOwner');
+            if (savedName && formOwnerField) {
+                formOwnerField.value = savedName;
+            }
+        }, 100);
+    });
+}
