@@ -303,26 +303,16 @@ openFormBtn.addEventListener('click', () => {
     }, 200);
 });
 
+// Global memory array string allocation cache
+let cachedPresets = [];
+
 async function loadItemPresetsFromJSON() {
     try {
         const response = await fetch("data.json");
         const itemPresetsArray = await response.json();
-        
         if (Array.isArray(itemPresetsArray)) {
-            let datalist = document.getElementById("mcItemPresets");
-            if (!datalist) {
-                datalist = document.createElement("datalist");
-                datalist.id = "mcItemPresets";
-                document.body.appendChild(datalist);
-            }
-            
-            let optionsHTML = "";
-            itemPresetsArray.forEach(item => {
-                
-                optionsHTML += `<option value="${item}"></option>`;
-            });
-            datalist.innerHTML = optionsHTML;
-            console.log("Successfully loaded presets from data.json into master datalist!");
+            cachedPresets = itemPresetsArray;
+            console.log("Successfully cached database rows from data.json!");
         }
     } catch (error) {
         console.error("Failed to read items from data.json file:", error);
@@ -337,25 +327,61 @@ window.addNewMarketInputRow = function(type) {
     const row = document.createElement('div');
     row.className = 'creation-input-row';
     row.innerHTML = `
-        <input type="text" class="creation-item-name-input" placeholder="${placeholderName}" list="mcItemPresets" required>
+        <input type="text" class="creation-item-name-input" placeholder="${placeholderName}" required autocomplete="off">
         <input type="text" class="creation-item-price-input" placeholder="100.00" required
                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\\..*?)\\..*/g, '$1');">
         <button type="button" class="remove-row-btn" onclick="this.parentElement.remove()">✕</button>
     `;
     targetList.appendChild(row);
-};
 
-if (descriptionTextarea && charCounter) {
-    descriptionTextarea.addEventListener('input', function() {
-        const currentLength = this.value.length;
-        charCounter.textContent = `${currentLength} / 150`;
-        if (currentLength >= 150) {
-            charCounter.style.color = '#ff2d75';
-        } else {
-            charCounter.style.color = '';
+    // Attach our custom floating autocomplete filter logic engine to the newly drawn row field
+    const nameInput = row.querySelector('.creation-item-name-input');
+    
+    nameInput.addEventListener('input', function() {
+        const queryText = this.value.trim().toLowerCase();
+        
+        // Remove old suggestions panels inside this specific row container to prevent clutter duplicates
+        let oldPanel = row.querySelector('.custom-suggestions-panel');
+        if (oldPanel) oldPanel.remove();
+        
+        if (queryText === "") return;
+
+        // Filter through our cached data.json item string terms array live
+        const filteredMatches = cachedPresets.filter(item => 
+            item.toLowerCase().includes(queryText)
+        );
+
+        if (filteredMatches.length === 0) return;
+
+        // Construct the floating custom glass list overlay
+        const panel = document.createElement('div');
+        panel.className = 'custom-suggestions-panel';
+
+        filteredMatches.forEach(matchText => {
+            const itemRow = document.createElement('div');
+            itemRow.className = 'suggestion-item-row';
+            itemRow.textContent = matchText;
+            
+            // Clicking an item locks it in text field box and closes the panel
+            itemRow.addEventListener('click', () => {
+                nameInput.value = matchText;
+                panel.remove();
+            });
+            
+            panel.appendChild(itemRow);
+        });
+
+        row.appendChild(panel);
+    });
+
+    // Safety Cancel Handle: Clicking outside the input row wipes suggestions cleanly from display focus
+    document.addEventListener('click', function(e) {
+        if (!row.contains(e.target)) {
+            let panel = row.querySelector('.custom-suggestions-panel');
+            if (panel) panel.remove();
         }
     });
-}
+};
 
 const realPublishBtn = document.getElementById('realPublishBtn');
 
