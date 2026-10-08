@@ -546,10 +546,11 @@ function updateProfileWidgetUI() {
         if(aImg) {
             const cleanUserString = savedName.replace(/\s+/g, '').trim();
             
-            aImg.src = "https://vzge.me" + cleanUserString;
+            // FIXED: Switched to the open browser-safe Crafatar API endpoint to guarantee immediate image renders
+            aImg.src = "https://crafatar.com" + cleanUserString + "?size=42&overlay";
             
             aImg.onerror = function() {
-                this.src = "https://vzge.meX-Steve";
+                this.src = "https://crafatar.comMHF_Steve?size=42&overlay";
                 this.onerror = null; 
             };
         }
