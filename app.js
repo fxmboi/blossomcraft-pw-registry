@@ -303,12 +303,12 @@ openFormBtn.addEventListener('click', () => {
     }, 200);
 });
 
-// Global memory array string allocation cache
 let cachedPresets = [];
 
 async function loadItemPresetsFromJSON() {
     try {
-        const response = await fetch("data.json");
+        // FIXED: Uses the absolute, direct live file path to guarantee GitHub downloads the array smoothly
+        const response = await fetch("https://githubusercontent.com");
         const itemPresetsArray = await response.json();
         if (Array.isArray(itemPresetsArray)) {
             cachedPresets = itemPresetsArray;
@@ -334,26 +334,25 @@ window.addNewMarketInputRow = function(type) {
     `;
     targetList.appendChild(row);
 
-    // Attach our custom floating autocomplete filter logic engine to the newly drawn row field
     const nameInput = row.querySelector('.creation-item-name-input');
     
-    nameInput.addEventListener('input', function() {
-        const queryText = this.value.trim().toLowerCase();
-        
-        // Remove old suggestions panels inside this specific row container to prevent clutter duplicates
+    // NEW VISUAL HELPER: Helper function to build and render the matching suggestions panel layout
+    function renderSuggestions(queryText) {
         let oldPanel = row.querySelector('.custom-suggestions-panel');
         if (oldPanel) oldPanel.remove();
-        
-        if (queryText === "") return;
 
-        // Filter through our cached data.json item string terms array live
-        const filteredMatches = cachedPresets.filter(item => 
-            item.toLowerCase().includes(queryText)
-        );
+        // FIXED: If user clicks inside an empty box, show the top 10 general presets automatically!
+        let filteredMatches = [];
+        if (queryText === "") {
+            filteredMatches = cachedPresets.slice(0, 10);
+        } else {
+            filteredMatches = cachedPresets.filter(item => 
+                item.toLowerCase().includes(queryText)
+            );
+        }
 
         if (filteredMatches.length === 0) return;
 
-        // Construct the floating custom glass list overlay
         const panel = document.createElement('div');
         panel.className = 'custom-suggestions-panel';
 
@@ -362,7 +361,6 @@ window.addNewMarketInputRow = function(type) {
             itemRow.className = 'suggestion-item-row';
             itemRow.textContent = matchText;
             
-            // Clicking an item locks it in text field box and closes the panel
             itemRow.addEventListener('click', () => {
                 nameInput.value = matchText;
                 panel.remove();
@@ -372,9 +370,18 @@ window.addNewMarketInputRow = function(type) {
         });
 
         row.appendChild(panel);
+    }
+
+    // FIXED: Triggers immediately when a user types characters into the bar slot
+    nameInput.addEventListener('input', function() {
+        renderSuggestions(this.value.trim().toLowerCase());
     });
 
-    // Safety Cancel Handle: Clicking outside the input row wipes suggestions cleanly from display focus
+    // FIXED: Also triggers immediately if a user clicks inside an empty input box!
+    nameInput.addEventListener('click', function() {
+        renderSuggestions(this.value.trim().toLowerCase());
+    });
+
     document.addEventListener('click', function(e) {
         if (!row.contains(e.target)) {
             let panel = row.querySelector('.custom-suggestions-panel');
