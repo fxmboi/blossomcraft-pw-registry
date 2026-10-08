@@ -734,17 +734,18 @@ body {
    11. FIXED: CORNER ALIGNED MINECRAFT PROFILE WIDGET
    ========================================== */
 .user-profile-widget {
-    position: fixed !important; /* Force layout out of normal flow page layout tracks entirely */
-    top: 40px !important;       /* Clean top window viewport spacing buffer boundary */
-    right: 40px !important;     /* Clean right window viewport spacing buffer boundary */
-    z-index: 999999 !important; /* Forces it to hover on top of absolutely everything else */
-    display: flex;
-    align-items: center;
+    position: fixed !important;
+    top: 40px !important;
+    right: 40px !important;
+    left: auto !important;
+    z-index: 999999 !important;
+    display: flex !important;
+    align-items: center !important;
 }
 
 .master-view-wrapper.searching-active .user-profile-widget {
-    opacity: 0;
-    pointer-events: none;
+    opacity: 0 !important;
+    pointer-events: none !important;
 }
 
 .profile-login-box {

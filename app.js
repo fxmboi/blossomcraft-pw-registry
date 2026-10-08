@@ -542,9 +542,9 @@ function updateProfileWidgetUI() {
         if(lBox) lBox.style.display = 'none';
         if(dBox) dBox.style.display = 'flex';
         if(nSpan) nSpan.textContent = savedName;
-
+        
         if(aImg) {
-            aImg.src = "https://mc-heads.net" + savedName + "/42.png";
+            aImg.src = "https://crafatar.com" + savedName + "?size=42&overlay";
         }
         
         const formOwnerField = document.getElementById('newWarpOwner');
