@@ -307,9 +307,10 @@ let cachedPresets = [];
 
 async function loadItemPresetsFromJSON() {
     try {
-
-        const response = await fetch("./data.json");
+        // FIXED: Restored back to the exact clean local file name fetch string that worked before!
+        const response = await fetch("data.json");
         const itemPresetsArray = await response.json();
+        
         if (Array.isArray(itemPresetsArray)) {
             cachedPresets = itemPresetsArray;
             console.log("Successfully cached database rows from data.json!");
@@ -336,12 +337,10 @@ window.addNewMarketInputRow = function(type) {
 
     const nameInput = row.querySelector('.creation-item-name-input');
     
-    // NEW VISUAL HELPER: Helper function to build and render the matching suggestions panel layout
     function renderSuggestions(queryText) {
         let oldPanel = row.querySelector('.custom-suggestions-panel');
         if (oldPanel) oldPanel.remove();
 
-        // FIXED: If user clicks inside an empty box, show the top 10 general presets automatically!
         let filteredMatches = [];
         if (queryText === "") {
             filteredMatches = cachedPresets.slice(0, 10);
@@ -372,12 +371,10 @@ window.addNewMarketInputRow = function(type) {
         row.appendChild(panel);
     }
 
-    // FIXED: Triggers immediately when a user types characters into the bar slot
     nameInput.addEventListener('input', function() {
         renderSuggestions(this.value.trim().toLowerCase());
     });
 
-    // FIXED: Also triggers immediately if a user clicks inside an empty input box!
     nameInput.addEventListener('click', function() {
         renderSuggestions(this.value.trim().toLowerCase());
     });
