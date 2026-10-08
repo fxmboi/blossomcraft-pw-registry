@@ -689,3 +689,43 @@ body {
 .server-lotus { color: #52fa7c !important; }
 .server-spirit { color: #8be9fd !important; }
 .server-cherry { color: #ff79c6 !important; }
+
+/* ==========================================
+   10. CUSTOM FLOATING SUGGESTION MENU
+   ========================================== */
+.creation-input-row {
+    position: relative; /* Anchor alignment for the floating suggestions window box */
+}
+
+.custom-suggestions-panel {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: calc(60% - 5px); /* Matches the exact width of your creation-item-name-input row precisely */
+    background-color: rgba(26, 2, 15, 0.95) !important; /* Rich solid dark glass tint */
+    border: 1px solid rgba(188, 45, 255, 0.3) !important; /* Neon purple border line */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    z-index: 2000;
+    max-height: 200px;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.suggestion-item-row {
+    padding: 10px 14px;
+    color: #ffffff;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-align: left;
+    transition: background-color 0.15s ease;
+}
+
+.suggestion-item-row:hover {
+    background-color: rgba(188, 45, 255, 0.25);
+    color: #ffffff;
+}
+
+/* Scrollbar for suggestions dropdown block */
+.custom-suggestions-panel::-webkit-scrollbar { width: 4px; }
+.custom-suggestions-panel::-webkit-scrollbar-track { background: transparent; }
+.custom-suggestions-panel::-webkit-scrollbar-thumb { background: rgba(188, 45, 255, 0.4); }
