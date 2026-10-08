@@ -387,6 +387,26 @@ window.addNewMarketInputRow = function(type) {
     });
 };
 
+const descriptionInput = document.getElementById('newWarpDesc');
+const displayCounter = document.getElementById('charCounter');
+
+if (descriptionInput && displayCounter) {
+    descriptionInput.addEventListener('input', function() {
+        if (this.value.length > 150) {
+            this.value = this.value.substring(0, 150);
+        }
+        
+        const currentLength = this.value.length;
+        displayCounter.textContent = `${currentLength} / 150`;
+        
+        if (currentLength >= 150) {
+            displayCounter.style.color = '#ff2d75';
+        } else {
+            displayCounter.style.color = '';
+        }
+    });
+}
+
 warpCreationForm.addEventListener('submit', async function(e) {
     e.preventDefault();
     
