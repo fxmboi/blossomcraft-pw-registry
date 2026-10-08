@@ -318,7 +318,8 @@ async function loadItemPresetsFromJSON() {
             
             let optionsHTML = "";
             itemPresetsArray.forEach(item => {
-                optionsHTML += `<option value="${item}">${item}</option>`;
+                
+                optionsHTML += `<option value="${item}"></option>`;
             });
             datalist.innerHTML = optionsHTML;
             console.log("Successfully loaded presets from data.json into master datalist!");
