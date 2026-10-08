@@ -513,7 +513,7 @@ body {
 }
 
 /* ==========================================
-   7. EXPANDED CUSTOM SHOP CREATION ENGINE
+   7. PRO COMPACT CUSTOM SHOP CREATION ENGINE
    ========================================== */
 .creation-view {
     display: none;
@@ -524,8 +524,8 @@ body {
     transform: translateY(20px);
     transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     
-    /* FIXED: Expanded maximum height significantly to maximize vertical screen coverage */
-    max-height: 82vh; 
+    /* FIXED: Adjusted limits so footers drop back down to their natural bottom alignment */
+    max-height: 72vh; 
     overflow-y: auto;
     padding-right: 8px;
 }
@@ -549,14 +549,7 @@ body {
     flex-direction: column;
 }
 
-/* FIXED: Sleek, separate glass block matching the main form palette precisely */
-.creation-action-bar {
-    background-color: rgba(43, 5, 26, 0.65);
-    margin-top: 15px;
-    padding: 20px 40px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-    box-sizing: border-box;
-}
+/* FIXED: Old separate action-bar styling code rules have been removed from here! */
 
 .form-row-split {
     display: grid;
