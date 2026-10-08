@@ -544,13 +544,12 @@ function updateProfileWidgetUI() {
         if(nSpan) nSpan.textContent = savedName;
         
         if(aImg) {
-            const cleanUserString = savedName.trim();
-
-            aImg.src = `https://minotar.net{cleanUserString}/42.png`;
+            const cleanUserString = savedName.replace(/\s+/g, '').trim();
+            
+            aImg.src = "https://surgeplay.com" + cleanUserString;
             
             aImg.onerror = function() {
-
-                this.src = "https://minotar.net";
+                this.src = "https://surgeplay.comX-Bot";
                 this.onerror = null; 
             };
         }
@@ -566,7 +565,6 @@ function updateProfileWidgetUI() {
         if(aImg) aImg.src = '';
     }
 }
-
 
 if (saveProfileBtn && usernameInput) {
     saveProfileBtn.addEventListener('click', () => {
