@@ -325,7 +325,7 @@ window.addNewMarketInputRow = function(type) {
     
     let optionsHTML = "";
     MC_ITEM_PRESETS.forEach(item => {
-        optionsHTML += `<option value="${item}"></option>`;
+        optionsHTML += `<option value="${item}">${item}</option>`;
     });
 
     const row = document.createElement('div');
