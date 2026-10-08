@@ -546,10 +546,10 @@ function updateProfileWidgetUI() {
         if(aImg) {
             const cleanUserString = savedName.replace(/\s+/g, '').trim();
             
-            aImg.src = "https://surgeplay.com" + cleanUserString;
+            aImg.src = "https://vzge.me" + cleanUserString;
             
             aImg.onerror = function() {
-                this.src = "https://surgeplay.comX-Bot";
+                this.src = "https://vzge.meX-Steve";
                 this.onerror = null; 
             };
         }
