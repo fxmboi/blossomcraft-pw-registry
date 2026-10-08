@@ -383,15 +383,6 @@ window.addNewMarketInputRow = function(type) {
     });
 };
 
-const realPublishBtn = document.getElementById('realPublishBtn');
-
-if (realPublishBtn) {
-    // Intercept clicks on the independent bar and fire the validation engine safely
-    realPublishBtn.addEventListener('click', () => {
-        document.getElementById('hiddenFormSubmit').click();
-    });
-}
-
 warpCreationForm.addEventListener('submit', async function(e) {
     e.preventDefault();
     
