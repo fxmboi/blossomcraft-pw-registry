@@ -337,8 +337,8 @@ window.addNewMarketInputRow = function(type) {
     row.className = 'creation-input-row';
     row.innerHTML = `
         <input type="text" class="creation-item-name-input" placeholder="${placeholderName}" list="mcItemPresets" required>
-        <input type="text" class="creation-item-price-input" placeholder="100" required
-               oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+        <input type="text" class="creation-item-price-input" placeholder="100.00" required
+               oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\\..*?)\\..*/g, '$1');">
         <button type="button" class="remove-row-btn" onclick="this.parentElement.remove()">✕</button>
     `;
     targetList.appendChild(row);
@@ -386,17 +386,29 @@ warpCreationForm.addEventListener('submit', async function(e) {
         return;
     }
 
+        const formatMinecraftCurrency = (rawInput) => {
+        let numericValue = parseFloat(rawInput);
+        if (isNaN(numericValue) || numericValue < 0) numericValue = 0;
+
+        if (numericValue > 999999999) numericValue = 999999999;
+        
+        return "$" + numericValue.toLocaleString('en-US', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2
+        });
+    };
+
     const collectedPrices = [];
     document.querySelectorAll('#formBuyList .creation-input-row').forEach(row => {
         const item = row.querySelector('.creation-item-name-input').value;
         const price = row.querySelector('.creation-item-price-input').value;
-        if(item && price) collectedPrices.push({ type: "buy", name: item, cost: `$${price}` });
+        if(item && price) collectedPrices.push({ type: "buy", name: item, cost: formatMinecraftCurrency(price) });
     });
 
     document.querySelectorAll('#formSellList .creation-input-row').forEach(row => {
         const item = row.querySelector('.creation-item-name-input').value;
         const price = row.querySelector('.creation-item-price-input').value;
-        if(item && price) collectedPrices.push({ type: "sell", name: item, cost: `$${price}` });
+        if(item && price) collectedPrices.push({ type: "sell", name: item, cost: formatMinecraftCurrency(price) });
     });
 
     const payload = {
