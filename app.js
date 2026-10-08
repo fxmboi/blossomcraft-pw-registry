@@ -307,8 +307,8 @@ let cachedPresets = [];
 
 async function loadItemPresetsFromJSON() {
     try {
-        // FIXED: Uses the absolute, direct live file path to guarantee GitHub downloads the array smoothly
-        const response = await fetch("https://githubusercontent.com");
+
+        const response = await fetch("./data.json");
         const itemPresetsArray = await response.json();
         if (Array.isArray(itemPresetsArray)) {
             cachedPresets = itemPresetsArray;
