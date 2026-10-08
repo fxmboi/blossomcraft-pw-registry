@@ -52,7 +52,6 @@
                         <span class="details-category">REGISTRY CONTROL</span>
                         <h2 class="details-title">Setup Your Custom Player Warp</h2>
                     </div>
-                                        <!-- CORE INFO INPUT FIELDS -->
                     <div class="form-row-split">
                         <div class="input-field-group">
                             <label for="newWarpName">Warp Name</label>
@@ -95,22 +94,22 @@
                     <div class="market-grid-container">
                         <div class="market-column">
                             <div class="market-header buy-header">Items You Want To Buy</div>
-                            <div class="market-list" id="formBuyList">
-                            </div>
+                            <div class="market-list" id="formBuyList"></div>
                             <button type="button" class="add-item-row-btn buy-accent" onclick="addNewMarketInputRow('buy')">+ Add Buy Item</button>
                         </div>
+                        
                         <div class="market-column">
                             <div class="market-header sell-header">Items You Want To Sell</div>
-                            <div class="market-list" id="formSellList">
-                            </div>
+                            <div class="market-list" id="formSellList"></div>
                             <button type="button" class="add-item-row-btn sell-accent" onclick="addNewMarketInputRow('sell')">+ Add Sell Item</button>
                         </div>
                     </div>
-                    <button type="submit" class="details-copy-btn" style="background-color: #bc2dff; margin-top: 15px;">Publish Warp Live</button>
+                    <button type="submit" id="hiddenFormSubmit" style="display: none;"></button>
                 </form>
+                <div class="creation-action-bar">
+                    <button type="button" class="details-copy-btn" id="realPublishBtn" style="background-color: #bc2dff;">Publish Warp Live</button>
+                </div>
             </div>
-            
-        </div>
     </div>
     <footer class="bottom-footer">
         <div class="footer-left">
