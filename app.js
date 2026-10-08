@@ -543,14 +543,15 @@ function updateProfileWidgetUI() {
         if(dBox) dBox.style.display = 'flex';
         if(nSpan) nSpan.textContent = savedName;
         
-        if(aImg) {
+                if(aImg) {
             const cleanUserString = savedName.replace(/\s+/g, '').trim();
             
-            // FIXED: Switched to the open browser-safe Crafatar API endpoint to guarantee immediate image renders
-            aImg.src = "https://crafatar.com" + cleanUserString + "?size=42&overlay";
+            // Typed out: Domain, forward slash avatar, forward slash username, forward slash dimension image type
+            aImg.src = "https://mc-heads.net/avatar/" + cleanUserString + "/42.png";
             
             aImg.onerror = function() {
-                this.src = "https://crafatar.comMHF_Steve?size=42&overlay";
+                // Fallback to official Steve skin if user string fails to match a premium account
+                this.src = "https://mc-heads.net/avatar/MHF_Steve/42.png";
                 this.onerror = null; 
             };
         }
