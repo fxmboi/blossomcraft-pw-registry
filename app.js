@@ -356,6 +356,15 @@ if (descriptionTextarea && charCounter) {
     });
 }
 
+const realPublishBtn = document.getElementById('realPublishBtn');
+
+if (realPublishBtn) {
+    // Intercept clicks on the independent bar and fire the validation engine safely
+    realPublishBtn.addEventListener('click', () => {
+        document.getElementById('hiddenFormSubmit').click();
+    });
+}
+
 warpCreationForm.addEventListener('submit', async function(e) {
     e.preventDefault();
     
@@ -363,7 +372,9 @@ warpCreationForm.addEventListener('submit', async function(e) {
     const ownerValue = document.getElementById('newWarpOwner').value.replace(/\s+/g, ''); 
     const serverValue = document.getElementById('newWarpServer').value;
     const descValue = document.getElementById('newWarpDesc').value;
-    const submitButton = warpCreationForm.querySelector('button[type="submit"]');
+    
+    // Selects our new independent action button wrapper to update the text states
+    const submitButton = document.getElementById('realPublishBtn');
     
     const selectedCategories = [];
     document.querySelectorAll('input[name="warpCategory"]:checked').forEach(box => {
