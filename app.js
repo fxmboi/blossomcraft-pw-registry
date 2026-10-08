@@ -533,23 +533,29 @@ const clearProfileBtn = document.getElementById('clearProfileBtn');
 function updateProfileWidgetUI() {
     const savedName = localStorage.getItem('blossom_mc_user');
     
+    const lBox = document.getElementById('profileLoginBox');
+    const dBox = document.getElementById('profileDisplayBox');
+    const nSpan = document.getElementById('profileNameSpan');
+    const aImg = document.getElementById('profileAvatarImg');
+
     if (savedName) {
-        if(loginBox) loginBox.style.display = 'none';
-        if(displayBox) displayBox.style.display = 'flex';
-        if(nameSpan) nameSpan.textContent = savedName;
-        
-        // FIXED: Switched to a robust avatar provider to render your helmet/head cleanly
-        if(avatarImg) avatarImg.src = `https://mc-heads.net{savedName}/42.png`;
+        if(lBox) lBox.style.display = 'none';
+        if(dBox) dBox.style.display = 'flex';
+        if(nSpan) nSpan.textContent = savedName;
+
+        if(aImg) {
+            aImg.src = "https://mc-heads.net" + savedName + "/42.png";
+        }
         
         const formOwnerField = document.getElementById('newWarpOwner');
         if (formOwnerField) {
             formOwnerField.value = savedName;
         }
     } else {
-        if(loginBox) loginBox.style.display = 'flex';
-        if(displayBox) displayBox.style.display = 'none';
-        if(nameSpan) nameSpan.textContent = '';
-        if(avatarImg) avatarImg.src = '';
+        if(lBox) lBox.style.display = 'flex';
+        if(dBox) dBox.style.display = 'none';
+        if(nSpan) nSpan.textContent = '';
+        if(aImg) aImg.src = '';
     }
 }
 
