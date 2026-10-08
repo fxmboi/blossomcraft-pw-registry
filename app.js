@@ -544,12 +544,12 @@ function updateProfileWidgetUI() {
         if(nSpan) nSpan.textContent = savedName;
         
         if(aImg) {
-            // Smart Image Pipeline: Pre-loads the skin with an automatic vanilla Steve head fallback if the account name isn't premium
             const cleanUserString = savedName.trim();
+
             aImg.src = `https://minotar.net{cleanUserString}/42.png`;
             
-            // Safety handler: If the API fails to find a custom skin texture file, load the default Steve face instantly
             aImg.onerror = function() {
+
                 this.src = "https://minotar.net";
                 this.onerror = null; 
             };
@@ -566,6 +566,7 @@ function updateProfileWidgetUI() {
         if(aImg) aImg.src = '';
     }
 }
+
 
 if (saveProfileBtn && usernameInput) {
     saveProfileBtn.addEventListener('click', () => {
