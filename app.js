@@ -414,8 +414,8 @@ warpCreationForm.addEventListener('submit', async function(e) {
     const ownerValue = document.getElementById('newWarpOwner').value.replace(/\s+/g, ''); 
     const serverValue = document.getElementById('newWarpServer').value;
     const descValue = document.getElementById('newWarpDesc').value;
+    const originalNameValue = document.getElementById('editWarpOriginalName').value;
     
-    // FIXED: Maps tracking feedback text directly to our unified header submit button
     const submitButton = document.getElementById('realPublishBtn');
     
     const selectedCategories = [];
@@ -428,16 +428,11 @@ warpCreationForm.addEventListener('submit', async function(e) {
         return;
     }
 
-        const formatMinecraftCurrency = (rawInput) => {
+    const formatMinecraftCurrency = (rawInput) => {
         let numericValue = parseFloat(rawInput);
         if (isNaN(numericValue) || numericValue < 0) numericValue = 0;
-
         if (numericValue > 999999999) numericValue = 999999999;
-        
-        return "$" + numericValue.toLocaleString('en-US', {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 2
-        });
+        return "$" + numericValue.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
     };
 
     const collectedPrices = [];
@@ -459,11 +454,13 @@ warpCreationForm.addEventListener('submit', async function(e) {
         server: serverValue, 
         category: selectedCategories.join(" / "),
         desc: descValue,
-        prices: collectedPrices
+        prices: collectedPrices,
+        isEdit: originalNameValue !== "",
+        originalName: originalNameValue
     };
 
     try {
-        submitButton.innerHTML = "⏳ Uploading...";
+        submitButton.innerHTML = "Overwriting Cloud Registry...";
         submitButton.style.backgroundColor = "#ffb86c";
         submitButton.disabled = true;
 
@@ -474,7 +471,9 @@ warpCreationForm.addEventListener('submit', async function(e) {
             body: JSON.stringify(payload)
         });
 
-        alert(`🌸 /pw ${nameValue} has been permanently saved to the Google Sheets Cloud Database!`);
+        alert(`🌸 /pw ${nameValue} changes have been successfully rewritten and updated live inside Google Sheets!`);
+        document.getElementById('editWarpOriginalName').value = "";
+        
         await fetchLiveCloudDatabase();
         returnToHomeFromForm();
         
@@ -487,6 +486,7 @@ warpCreationForm.addEventListener('submit', async function(e) {
         submitButton.disabled = false;
     }
 });
+
 
 function returnToHomeFromForm() {
     creationView.classList.remove('active');
@@ -647,6 +647,70 @@ if (openFormBtn) {
 }
 
 // ==========================================
+// OPEN FORM IN EDIT MODE FUNCTION
+// ==========================================
+function openFormInEditMode(warp) {
+    titleArea.style.opacity = '0';
+    openFormBtn.style.opacity = '0';
+    titleArea.style.pointerEvents = 'none';
+    openFormBtn.style.pointerEvents = 'none';
+    masterView.classList.add('searching-active');
+    searchInput.disabled = true;
+    searchInput.placeholder = "Modifying shop listing records...";
+
+    document.getElementById('editWarpOriginalName').value = warp.name;
+
+    document.getElementById('newWarpName').value = warp.name;
+    document.getElementById('newWarpOwner').value = warp.owner || "";
+    document.getElementById('newWarpServer').value = warp.server || "Tulip";
+    document.getElementById('newWarpDesc').value = warp.desc || "";
+
+    if (charCounter) charCounter.textContent = `${(warp.desc || "").length} / 150`;
+
+    document.querySelectorAll('input[name="warpCategory"]').forEach(box => {
+        box.checked = warp.category.split(" / ").includes(box.value);
+    });
+
+    document.getElementById('formBuyList').innerHTML = '';
+    document.getElementById('formSellList').innerHTML = '';
+
+    let totalBuy = 0;
+    let totalSell = 0;
+
+    if (warp.prices && warp.prices.length > 0) {
+        warp.prices.forEach(p => {
+            const listId = p.type === 'buy' ? 'formBuyList' : 'formSellList';
+            const placeholderText = p.type === 'buy' ? 'e.g., Diamond x1' : 'e.g., Oak Logs x64';
+            const uniqueListId = `presets-${Math.random().toString(36).substr(2, 9)}`;
+            const rawNumericString = p.cost.replace(/[^0-9.]/g, '');
+
+            const row = document.createElement('div');
+            row.className = 'creation-input-row';
+            row.innerHTML = `
+                <input type="text" class="creation-item-name-input" placeholder="${placeholderText}" value="${p.name}" list="${uniqueListId}" required>
+                <datalist id="${uniqueListId}">${(typeof MC_ITEM_PRESETS !== 'undefined' ? MC_ITEM_PRESETS : []).map(i => `<option value="i">{i}</option>`).join('')}</datalist>
+                <input type="text" class="creation-item-price-input" placeholder="100.00" value="${rawNumericString}" required
+                       oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\\..*?)\\..*/g, '$1');">
+                <button type="button" class="remove-row-btn" onclick="this.parentElement.remove()">✕</button>
+            `;
+            document.getElementById(listId).appendChild(row);
+            
+            if (p.type === 'buy') totalBuy++;
+            else totalSell++;
+        });
+    }
+
+    if (totalBuy === 0) addNewMarketInputRow('buy');
+    if (totalSell === 0) addNewMarketInputRow('sell');
+
+    creationView.scrollTop = 0;
+    setTimeout(() => {
+        creationView.style.display = 'block';
+        setTimeout(() => { creationView.classList.add('active'); }, 50);
+    }, 200);
+}
+
+// ==========================================
 // MY WARPS DYNAMIC SUB-DIRECTORY ROUTER ENGINE
 // ==========================================
 if (myWarpsBtn) {
@@ -672,7 +736,6 @@ if (myWarpsBtn) {
             targetSearchBar.placeholder = `Viewing warps owned by ${savedAccountName}...`;
         }
 
-        const profileWidgetWrapper = document.getElementById('userProfileWidget');
         if (profileWidgetWrapper) {
             profileWidgetWrapper.classList.add('lock-active');
         }
@@ -703,7 +766,8 @@ if (myWarpsBtn) {
                         <span class="card-server-badge ${serverColorClass}">${serverName}</span>
                     </div>
                 `;
-                card.addEventListener('click', () => { loadShopDetailsPage(warp); });
+
+                card.addEventListener('click', () => { openFormInEditMode(warp); });
                 resultsGrid.appendChild(card);
             });
         }
