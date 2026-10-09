@@ -489,19 +489,41 @@ warpCreationForm.addEventListener('submit', async function(e) {
 
 
 function returnToHomeFromForm() {
-    creationView.classList.remove('active');
+    if (creationView) creationView.classList.remove('active');
     masterView.classList.remove('searching-active');
     
+    const profileWidgetWrapper = document.getElementById('userProfileWidget');
+    if (profileWidgetWrapper) {
+        profileWidgetWrapper.classList.remove('lock-active');
+    }
+
+    if (resultsView) {
+        resultsView.style.display = 'none';
+        resultsView.classList.remove('reveal-results');
+    }
+    if (resultsGrid) resultsGrid.innerHTML = '';
+    
     setTimeout(() => {
-        creationView.style.display = 'none';
-        searchInput.disabled = false;
-        searchInput.placeholder = "Search by warp name, item, category...";
+        if (creationView) creationView.style.display = 'none';
         
-        titleArea.style.opacity = '1';
-        openFormBtn.style.opacity = '1';
-        titleArea.style.pointerEvents = 'auto';
-        openFormBtn.style.pointerEvents = 'auto';
+        const targetSearchBar = document.getElementById('mainSearch');
+        if (targetSearchBar) {
+            targetSearchBar.disabled = false;
+            targetSearchBar.placeholder = "Search by warp name, item, category...";
+            targetSearchBar.value = '';
+        }
+        
+        if (titleArea) {
+            titleArea.style.opacity = '1';
+            titleArea.style.pointerEvents = 'auto';
+        }
+        if (openFormBtn) {
+            openFormBtn.style.opacity = '1';
+            openFormBtn.style.pointerEvents = 'auto';
+        }
         if (charCounter) charCounter.textContent = "0 / 150";
+        
+        document.getElementById('editWarpOriginalName').value = "";
         warpCreationForm.reset();
     }, 650);
 }
@@ -650,16 +672,24 @@ if (openFormBtn) {
 // OPEN FORM IN EDIT MODE FUNCTION
 // ==========================================
 function openFormInEditMode(warp) {
+    if (resultsView) {
+        resultsView.style.display = 'none';
+        resultsView.classList.remove('reveal-results');
+    }
+    
     titleArea.style.opacity = '0';
     openFormBtn.style.opacity = '0';
     titleArea.style.pointerEvents = 'none';
     openFormBtn.style.pointerEvents = 'none';
     masterView.classList.add('searching-active');
-    searchInput.disabled = true;
-    searchInput.placeholder = "Modifying shop listing records...";
+    
+    const targetSearchBar = document.getElementById('mainSearch');
+    if (targetSearchBar) {
+        targetSearchBar.disabled = true;
+        targetSearchBar.placeholder = "Modifying shop listing records...";
+    }
 
     document.getElementById('editWarpOriginalName').value = warp.name;
-
     document.getElementById('newWarpName').value = warp.name;
     document.getElementById('newWarpOwner').value = warp.owner || "";
     document.getElementById('newWarpServer').value = warp.server || "Tulip";
@@ -688,7 +718,7 @@ function openFormInEditMode(warp) {
             row.className = 'creation-input-row';
             row.innerHTML = `
                 <input type="text" class="creation-item-name-input" placeholder="${placeholderText}" value="${p.name}" list="${uniqueListId}" required>
-                <datalist id="${uniqueListId}">${(typeof MC_ITEM_PRESETS !== 'undefined' ? MC_ITEM_PRESETS : []).map(i => `<option value="i">{i}</option>`).join('')}</datalist>
+                <datalist id="${uniqueListId}">${(typeof MC_ITEM_PRESETS !== 'undefined' ? MC_ITEM_PRESETS : []).map(i => `<option value="\${i}"></option>`).join('')}</datalist>
                 <input type="text" class="creation-item-price-input" placeholder="100.00" value="${rawNumericString}" required
                        oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\\..*?)\\..*/g, '$1');">
                 <button type="button" class="remove-row-btn" onclick="this.parentElement.remove()">✕</button>
