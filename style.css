@@ -527,8 +527,6 @@ body {
     opacity: 0;
     transform: translateY(20px);
     transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    
-    /* FIXED: Adjusted limits so footers drop back down to their natural bottom alignment */
     max-height: 72vh; 
     overflow-y: auto;
     padding-right: 8px;
@@ -552,8 +550,6 @@ body {
     display: flex;
     flex-direction: column;
 }
-
-/* FIXED: Old separate action-bar styling code rules have been removed from here! */
 
 .form-row-split {
     display: grid;
@@ -694,16 +690,16 @@ body {
    10. CUSTOM FLOATING SUGGESTION MENU
    ========================================== */
 .creation-input-row {
-    position: relative; /* Anchor alignment for the floating suggestions window box */
+    position: relative;
 }
 
 .custom-suggestions-panel {
     position: absolute;
     top: 100%;
     left: 0;
-    width: calc(60% - 5px); /* Matches the exact width of your creation-item-name-input row precisely */
-    background-color: rgba(26, 2, 15, 0.95) !important; /* Rich solid dark glass tint */
-    border: 1px solid rgba(188, 45, 255, 0.3) !important; /* Neon purple border line */
+    width: calc(60% - 5px);
+    background-color: rgba(26, 2, 15, 0.95) !important;
+    border: 1px solid rgba(188, 45, 255, 0.3) !important;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
     z-index: 2000;
     max-height: 200px;
@@ -725,7 +721,6 @@ body {
     color: #ffffff;
 }
 
-/* Scrollbar for suggestions dropdown block */
 .custom-suggestions-panel::-webkit-scrollbar { width: 4px; }
 .custom-suggestions-panel::-webkit-scrollbar-track { background: transparent; }
 .custom-suggestions-panel::-webkit-scrollbar-thumb { background: rgba(188, 45, 255, 0.4); }
@@ -796,15 +791,15 @@ body {
 }
 
 #profileAvatarImg {
-    width: 42px; /* FIXED: Increased from 24px to 42px to make your skin avatar clear and highly visible */
+    width: 42px;
     height: 42px;
-    image-rendering: pixelated; /* Keeps your 8-bit block skin completely crisp and non-blurry */
+    image-rendering: pixelated;
     border: 1px solid rgba(255, 255, 255, 0.2);
     background-color: rgba(0, 0, 0, 0.2);
 }
 
 #profileNameSpan {
-    font-size: 1.05rem; /* FIXED: Increased text font scale for perfect balance */
+    font-size: 1.05rem;
     font-weight: 600;
     color: #ffffff;
 }
@@ -850,3 +845,31 @@ body {
     border-radius: 0px !important;
 }
 
+/* ==========================================
+   14. USER PROFILE INTEGRATED MY WARPS TRIGGER
+   ========================================== */
+.my-warps-action-toggle {
+    background: transparent !important;
+    border: none !important;
+    color: rgba(188, 45, 255, 0.85) !important;
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px;
+    padding: 2px 0px !important;
+    cursor: pointer !important;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s ease;
+    width: max-content;
+}
+
+.my-warps-action-toggle:hover {
+    color: #ffffff !important;
+}
+
+.user-profile-widget.lock-active #clearProfileBtn {
+    display: none !important;
+    pointer-events: none !important;
+    visibility: hidden;
+}

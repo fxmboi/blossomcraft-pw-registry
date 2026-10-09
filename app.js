@@ -630,3 +630,95 @@ if (openFormBtn) {
         }, 100);
     });
 }
+
+// ==========================================
+// MY WARPS DYNAMIC SUB-DIRECTORY ROUTER ENGINE
+// ==========================================
+const myWarpsBtn = document.getElementById('myWarpsBtn');
+const profileWidgetWrapper = document.getElementById('userProfileWidget');
+
+if (myWarpsBtn) {
+    myWarpsBtn.addEventListener('click', function() {
+        const savedAccountName = localStorage.getItem('blossom_mc_user');
+        if (!savedAccountName) return;
+
+        // 1. Clear out old layout states to prevent card conflicts
+        if (shopDetailsView) {
+            shopDetailsView.classList.remove('active');
+            setTimeout(() => { shopDetailsView.style.display = 'none'; }, 200);
+        }
+        if (resultsView) {
+            resultsView.classList.remove('hidden-for-details');
+        }
+
+        // 2. Lock home search input bar interactions and fade loop typewriter titles out
+        masterView.classList.add('searching-active');
+        resultsGrid.innerHTML = '';
+        
+        if (searchInput) {
+            searchInput.value = '';
+            searchInput.disabled = true;
+            searchInput.placeholder = `Viewing warps owned by ${savedAccountName}...`;
+        }
+
+        // 3. FORCE LOCK ON UNLINK BUTTON: Lock profile session states
+        if (profileWidgetWrapper) {
+            profileWidgetWrapper.classList.add('lock-active');
+        }
+
+        // 4. Scan through live registry matching the owner string precisely
+        const myMatches = warpRegistryData.filter(warp => {
+            const warpOwner = warp.owner ? warp.owner.trim().toLowerCase() : '';
+            return warpOwner === savedAccountName.trim().toLowerCase();
+        });
+
+        // 5. Draw matching cards or an informative fallback message empty slot
+        if (myMatches.length === 0) {
+            resultsGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; opacity: 0.6; padding-top: 40px; color: #ffffff;">You haven't registered any player warps under this username yet.</p>`;
+        } else {
+            myMatches.forEach(warp => {
+                const serverName = warp.server || "Tulip";
+                let serverColorClass = "server-tulip";
+                if (serverName.toLowerCase() === "lotus") serverColorClass = "server-lotus";
+                else if (serverName.toLowerCase() === "spirit") serverColorClass = "server-spirit";
+                else if (serverName.toLowerCase() === "cherry") serverColorClass = "server-cherry";
+
+                const card = document.createElement('div');
+                card.className = 'warp-result-card';
+                card.innerHTML = `
+                    <div class="card-top">
+                        <span class="card-category">${warp.category}</span>
+                        <h3 class="card-title">/pw ${warp.name}</h3>
+                        <p class="card-desc">${warp.desc}</p>
+                        <span class="card-server-badge ${serverColorClass}">${serverName}</span>
+                    </div>
+                `;
+                card.addEventListener('click', () => { loadShopDetailsPage(warp); });
+                resultsGrid.appendChild(card);
+            });
+        }
+
+        // 6. Draw animation reveal passes safely
+        resultsView.style.display = 'block';
+        setTimeout(() => {
+            resultsView.classList.add('reveal-results');
+            const generatedCards = document.querySelectorAll('.warp-result-card');
+            generatedCards.forEach((card, index) => {
+                setTimeout(() => { card.classList.add('reveal-card'); }, (index + 1) * 60);
+            });
+        }, 200);
+    });
+}
+
+// EXTENSION HOOK: Unlock account controls seamlessly as soon as the user returns back up home
+const originalCloseResultsBtn = document.getElementById('closeResultsBtn');
+if (originalCloseResultsBtn) {
+    originalCloseResultsBtn.addEventListener('click', () => {
+        // Only trigger unlocks if we are completely exiting results and returning to the empty home menu view
+        if (!masterView.classList.contains('searching-active')) {
+            if (profileWidgetWrapper) {
+                profileWidgetWrapper.classList.remove('lock-active');
+            }
+        }
+    });
+}
