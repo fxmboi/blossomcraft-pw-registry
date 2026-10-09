@@ -736,8 +736,8 @@ if (myWarpsBtn) {
             targetSearchBar.placeholder = `Viewing warps owned by ${savedAccountName}...`;
         }
 
-        if (profileWidgetWrapper) {
-            profileWidgetWrapper.classList.add('lock-active');
+        if (document.getElementById('userProfileWidget')) {
+            document.getElementById('userProfileWidget').classList.add('lock-active');
         }
 
         const myMatches = warpRegistryData.filter(warp => {
