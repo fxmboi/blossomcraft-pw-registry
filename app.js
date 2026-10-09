@@ -525,6 +525,18 @@ closeResultsBtn.addEventListener('click', () => {
         resultsView.classList.remove('reveal-results');
         masterView.classList.remove('searching-active');
         
+        // FIXED: Forcefully unlocks your search bar input and restores default placeholders instantly
+        if (searchInput) {
+            searchInput.disabled = false;
+            searchInput.placeholder = "Search by warp name, item, category...";
+        }
+
+        // FIXED: Seamlessly unlocks your profile widget cross (✕) unlinking session controls right away
+        const profileWidgetWrapper = document.getElementById('userProfileWidget');
+        if (profileWidgetWrapper) {
+            profileWidgetWrapper.classList.remove('lock-active');
+        }
+        
         setTimeout(() => {
             resultsView.style.display = 'none';
             resultsGrid.innerHTML = '';
@@ -707,18 +719,5 @@ if (myWarpsBtn) {
                 setTimeout(() => { card.classList.add('reveal-card'); }, (index + 1) * 60);
             });
         }, 200);
-    });
-}
-
-// EXTENSION HOOK: Unlock account controls seamlessly as soon as the user returns back up home
-const originalCloseResultsBtn = document.getElementById('closeResultsBtn');
-if (originalCloseResultsBtn) {
-    originalCloseResultsBtn.addEventListener('click', () => {
-        // Only trigger unlocks if we are completely exiting results and returning to the empty home menu view
-        if (!masterView.classList.contains('searching-active')) {
-            if (profileWidgetWrapper) {
-                profileWidgetWrapper.classList.remove('lock-active');
-            }
-        }
     });
 }
