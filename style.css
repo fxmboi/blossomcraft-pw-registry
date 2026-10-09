@@ -822,3 +822,32 @@ body {
 #clearProfileBtn:hover {
     color: #ff2d75;
 }
+
+/* ==========================================
+   13. INDEPENDENT DEEP DIVE MARKET LIST SCROLLBARS
+   ========================================== */
+.market-list,
+#buyMarketList,
+#sellMarketList {
+
+    max-height: 380px !important; 
+    overflow-y: auto !important;
+    padding-right: 6px;
+    box-sizing: border-box;
+}
+
+#buyMarketList::-webkit-scrollbar,
+#sellMarketList::-webkit-scrollbar {
+    width: 4px !important;
+}
+
+#buyMarketList::-webkit-scrollbar-track,
+#sellMarketList::-webkit-scrollbar-track {
+    background: transparent !important;
+}
+
+#buyMarketList::-webkit-scrollbar-thumb,
+#sellMarketList::-webkit-scrollbar-thumb {
+    background-color: rgba(188, 45, 255, 0.4) !important;
+    border-radius: 0px !important;
+}
