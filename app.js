@@ -507,46 +507,49 @@ function returnToHomeFromForm() {
 }
 
 closeResultsBtn.addEventListener('click', () => {
-    if (shopDetailsView.classList.contains('active')) {
+    if (shopDetailsView && shopDetailsView.classList.contains('active')) {
         shopDetailsView.classList.remove('active');
         setTimeout(() => {
             shopDetailsView.style.display = 'none';
-            resultsView.style.display = 'block';
+            if (resultsView) resultsView.style.display = 'block';
             setTimeout(() => {
-                resultsView.classList.remove('hidden-for-details');
+                if (resultsView) resultsView.classList.remove('hidden-for-details');
                 activeShopTarget = null;
             }, 50);
         }, 400);
     } 
-    else if (creationView.classList.contains('active')) {
+    else if (creationView && creationView.classList.contains('active')) {
         returnToHomeFromForm();
     }
     else {
-        resultsView.classList.remove('reveal-results');
+        if (resultsView) resultsView.classList.remove('reveal-results');
         masterView.classList.remove('searching-active');
         
-        // FIXED: Forcefully unlocks your search bar input and restores default placeholders instantly
-        if (searchInput) {
-            searchInput.disabled = false;
-            searchInput.placeholder = "Search by warp name, item, category...";
+        const targetSearchBar = document.getElementById('mainSearch');
+        if (targetSearchBar) {
+            targetSearchBar.disabled = false;
+            targetSearchBar.placeholder = "Search by warp name, item, category...";
+            targetSearchBar.value = '';
         }
 
-        // FIXED: Seamlessly unlocks your profile widget cross (✕) unlinking session controls right away
         const profileWidgetWrapper = document.getElementById('userProfileWidget');
         if (profileWidgetWrapper) {
             profileWidgetWrapper.classList.remove('lock-active');
         }
         
         setTimeout(() => {
-            resultsView.style.display = 'none';
+            if (resultsView) resultsView.style.display = 'none';
             resultsGrid.innerHTML = '';
-            searchInput.value = '';
             activeShopTarget = null;
             
-            titleArea.style.opacity = '1';
-            openFormBtn.style.opacity = '1';
-            titleArea.style.pointerEvents = 'auto';
-            openFormBtn.style.pointerEvents = 'auto';
+            if (titleArea) {
+                titleArea.style.opacity = '1';
+                titleArea.style.pointerEvents = 'auto';
+            }
+            if (openFormBtn) {
+                openFormBtn.style.opacity = '1';
+                openFormBtn.style.pointerEvents = 'auto';
+            }
         }, 650);
     }
 });
@@ -646,15 +649,11 @@ if (openFormBtn) {
 // ==========================================
 // MY WARPS DYNAMIC SUB-DIRECTORY ROUTER ENGINE
 // ==========================================
-const myWarpsBtn = document.getElementById('myWarpsBtn');
-const profileWidgetWrapper = document.getElementById('userProfileWidget');
-
 if (myWarpsBtn) {
     myWarpsBtn.addEventListener('click', function() {
         const savedAccountName = localStorage.getItem('blossom_mc_user');
         if (!savedAccountName) return;
 
-        // 1. Clear out old layout states to prevent card conflicts
         if (shopDetailsView) {
             shopDetailsView.classList.remove('active');
             setTimeout(() => { shopDetailsView.style.display = 'none'; }, 200);
@@ -663,28 +662,25 @@ if (myWarpsBtn) {
             resultsView.classList.remove('hidden-for-details');
         }
 
-        // 2. Lock home search input bar interactions and fade loop typewriter titles out
         masterView.classList.add('searching-active');
         resultsGrid.innerHTML = '';
         
-        if (searchInput) {
-            searchInput.value = '';
-            searchInput.disabled = true;
-            searchInput.placeholder = `Viewing warps owned by ${savedAccountName}...`;
+        const targetSearchBar = document.getElementById('mainSearch');
+        if (targetSearchBar) {
+            targetSearchBar.value = '';
+            targetSearchBar.disabled = true;
+            targetSearchBar.placeholder = `Viewing warps owned by ${savedAccountName}...`;
         }
 
-        // 3. FORCE LOCK ON UNLINK BUTTON: Lock profile session states
         if (profileWidgetWrapper) {
             profileWidgetWrapper.classList.add('lock-active');
         }
 
-        // 4. Scan through live registry matching the owner string precisely
         const myMatches = warpRegistryData.filter(warp => {
             const warpOwner = warp.owner ? warp.owner.trim().toLowerCase() : '';
             return warpOwner === savedAccountName.trim().toLowerCase();
         });
 
-        // 5. Draw matching cards or an informative fallback message empty slot
         if (myMatches.length === 0) {
             resultsGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; opacity: 0.6; padding-top: 40px; color: #ffffff;">You haven't registered any player warps under this username yet.</p>`;
         } else {
@@ -710,7 +706,6 @@ if (myWarpsBtn) {
             });
         }
 
-        // 6. Draw animation reveal passes safely
         resultsView.style.display = 'block';
         setTimeout(() => {
             resultsView.classList.add('reveal-results');
