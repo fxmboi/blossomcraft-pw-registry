@@ -826,10 +826,8 @@ body {
 /* ==========================================
    13. INDEPENDENT DEEP DIVE MARKET LIST SCROLLBARS
    ========================================== */
-.market-list,
 #buyMarketList,
 #sellMarketList {
-
     max-height: 380px !important; 
     overflow-y: auto !important;
     padding-right: 6px;
@@ -851,3 +849,4 @@ body {
     background-color: rgba(188, 45, 255, 0.4) !important;
     border-radius: 0px !important;
 }
+
